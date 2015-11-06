@@ -1,0 +1,90 @@
+<template name="timetracks">
+  <a href="" class="pure-button pdf">Pdf</a>
+
+  <table class="pure-table">
+    <thead>
+    <tr>
+      <th>Date</th>
+      <th>From</th>
+      <th>To</th>
+      <th>Project</th>
+      <th>Feature</th>
+      <th>Time</th>
+      <th><i class="fa fa-plus action th-action"></i></th>
+    </tr>
+    </thead>
+
+    <tbody>
+    {{#each timetracks}}
+    <tr class="" id="{{_id}}">
+      <td>{{date}}</td>
+      <td>{{from}}</td>
+      <td>{{to}}</td>
+      <td>{{projectName project}}</td>
+      <td>{{feature}}</td>
+      <td>{{time}}</td>
+      <td>
+        <i class="fa fa-pencil-square-o action edit"></i>
+        <span> </span>
+        <i class="fa fa-trash action action remove"></i>
+      </td>
+    </tr>
+    {{/each}}
+
+    </tbody>
+  </table>
+</template>
+
+<template name="timetrack">
+  <form class="pure-form pure-form-stacked">
+    <fieldset>
+      {{#with timetrack}}
+      <input id="_id" type="hidden" value="{{_id}}">
+
+      <div class="pure-g">
+        <div class="pure-u-1 pure-u-md-1-3">
+          <label for="date">Date</label>
+          <input id="date" class="pure-u-23-24" type="date" required value="{{date}}">
+        </div>
+
+        <div class="pure-u-1 pure-u-md-1-3">
+          <label for="from">From</label>
+          <input id="from" class="pure-u-23-24" type="time" required value="{{from}}">
+        </div>
+
+        <div class="pure-u-1 pure-u-md-1-3">
+          <label for="to">To</label>
+          <input id="to" class="pure-u-23-24" type="time" value="{{to}}">
+        </div>
+
+        <div class="pure-u-1 pure-u-md-1-2">
+          <label for="project">Project</label>
+          <select id="project" class="pure-u-23-24">
+            <option value="">-</option>
+            {{#each projects}}
+              <option value="{{_id}}" selected={{isSelected _id}}>{{name}}</option>
+            {{/each}}
+          </select>
+        </div>
+
+        <div class="pure-u-1 pure-u-md-1-2">
+          <label for="feature">Feature</label>
+          <input id="feature" class="pure-u-23-24" type="text" value="{{feature}}">
+        </div>
+
+        <div class="pure-u-1 pure-u-md-1-1">
+          <label for="task">Task</label>
+          <textarea id="task" class="pure-u-23-24" rows="10">{{task}}</textarea>
+        </div>
+
+      </div>
+
+      <label for="billable" class="pure-checkbox">
+        <input id="billable" type="checkbox" checked="{{billable}}"> Billable
+      </label>
+
+      <button type="submit" class="pure-button pure-button-primary save">Submit</button>
+      {{/with}}
+    </fieldset>
+  </form>
+</template>

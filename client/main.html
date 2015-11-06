@@ -1,0 +1,45 @@
+<head>
+  <title>Freetrk</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<template name="mainLayout">
+  <div id="wrap">
+    <header class="">
+      {{> menu}}
+    </header>
+    <main class="l-box">
+      {{>Template.dynamic template=content}}
+    </main>
+  </div>
+  <!--<footer class="l-box">Copyleft (L) El Softwarerero</footer>-->
+</template>
+
+<template name="menu">
+  <div class="menu">
+    <div class="pure-menu pure-menu-horizontal pull-left">
+      <a href="/" class="pure-menu-heading pure-menu-link">Freetrk</a>
+      <ul class="pure-menu-list">
+        <li class="pure-menu-item"><a href="/timetrack/new" class="pure-menu-link">Work<i class="fa fa-exclamation"></i></a>
+        </li>
+        <li class="pure-menu-item"><a href="/timetrack" class="pure-menu-link">Timetrack</a></li>
+        <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
+          <a href="/admin" id="menuLink1" class="pure-menu-link">Settings</a>
+          <ul class="pure-menu-children">
+            <li class="pure-menu-item"><a href="/admin/projects" class="pure-menu-link">Projects</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="pull-right">
+      {{> loginButtons align="right"}}
+    </div>
+  </div>
+</template>
+
+
+<template name="home">
+  <p>It is good to be at home.</p>
+</template>
+
+    

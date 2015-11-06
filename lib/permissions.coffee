@@ -1,0 +1,2 @@
+TemplateFiles.allow
+  'insert': () -> true

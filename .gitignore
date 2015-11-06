@@ -1,0 +1,5 @@
+.idea
+.meteor
+*.iml
+packages
+lib/config.coffee
