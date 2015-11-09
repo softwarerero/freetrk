@@ -6,6 +6,8 @@ http://fortawesome.github.io/Font-Awesome/icons/
 https://kadira.io/academy/meteor-routing-guide/content/rendering-blaze-templates
 https://github.com/CollectionFS/Meteor-CollectionFS
 https://github.com/kadirahq/flow-router
+http://xdsoft.net/jqplugins/datetimepicker/
+
 
 ### Packages
 coffeescript
@@ -21,6 +23,10 @@ pascoual:pdfkit
 odt-old-archiver 
 meteorhacks:npm
 cfs:standard-packages cfs:gridfs cfs:ejson-file
+momentjs:moment
+#drewy:pikaday-time
+drewy:datetimepicker
+
 
 ### Hints
 For odt table.js has to be replaced with https://github.com/domachine/node-odt/blob/master/lib/handler/table.js
