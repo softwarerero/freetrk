@@ -5,7 +5,7 @@ Meteor.methods
 
   printTimesheet: () ->
     timetracks = Timetrack.find({}, {sort: {date: 1, from: 1}})
-    createOdt timetracks
+    Meteor.wrapAsync createOdt timetracks
 
   saveTimesheetTemplate: (fileObj, original) ->
     console.log 'saveTimesheetTemplate: ' + JSON.stringify original
@@ -13,25 +13,20 @@ Meteor.methods
     
 # refactor    
 createOdt = (timetracks) ->
-  console.log 'createOdt'
-
   odt = Meteor.npmRequire('odt-old-archiver')
   table = Meteor.npmRequire('odt-old-archiver/lib/handler').table
   fs = Meteor.npmRequire('fs')
-  events = Meteor.npmRequire 'events'
-  createWriteStream = fs.createWriteStream
 
-  # TODO: continue here - have to write the stream to a temp file because odt with a stream is buggy
-  doc = '/Users/sun/Downloads/suncom_timesheet.ott'
+  odtFileName = Config.tmpPath + '/' + 'timesheet_' + Meteor.userId() + '-' + Date.now() + '.odt'
   settings = Settings.findOne {userId: Meteor.userId()}
-  doc = settings.timesheet.getFileRecord().createReadStream()
-  out = fs.createWriteStream '/Users/sun/Downloads/suncom_timesheet2.ott'
-  doc.pipe out 
-  console.log 'doc: ' + doc
+  fileObj = TemplateFiles.findOne {_id: settings.timesheet._id}
+  if !fileObj
+    throw new Meteor.Error 'no-timesheet', 'You must upload a timesheet under settings first!'
+  doc = fileObj.getFileRecord().createReadStream()
   
   values =
     "customer": { "type": "string", "value": "A Customer" }
-    "project": { "type": "string", "value": "hallo" }
+    "project": { "type": "string", "value": "hallo2" }
     "invoice_period": { "type": "string", "value": "This month" }
     "hours_worked": { "type": "string", "value": "10" }
     "hours_non_billable": { "type": "string", "value": "20" }
@@ -55,7 +50,7 @@ createOdt = (timetracks) ->
         throw err
       .finalize (bytes) ->
         console.log('The document is ' + bytes + ' bytes large.')
-      .pipe(createWriteStream('/Users/sun/Downloads/timesheet.odt'))
+      .pipe(fs.createWriteStream(odtFileName))
       .on 'close', () ->
         console.log('document written')
 

@@ -2,6 +2,9 @@ fs = Npm.require('fs')
 
 Meteor.startup ->
 
+#  console.log 'remove: ' + TemplateFiles.remove {}
+
+  
   #Meteor.users.remove {}
   if !Meteor.users.find().count()
     for u in Config.users
