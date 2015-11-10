@@ -9,7 +9,9 @@
       {{> menu}}
     </header>
     <main class="l-box">
-      {{>Template.dynamic template=content}}
+      {{#ifLoggedIn}}
+        {{>Template.dynamic template=content}}
+      {{/ifLoggedIn}}
     </main>
   </div>
   <!--<footer class="l-box">Copyleft (L) El Softwarerero</footer>-->
@@ -19,6 +21,7 @@
   <div class="menu">
     <div class="pure-menu pure-menu-horizontal pull-left">
       <a href="/" class="pure-menu-heading pure-menu-link">Freetrk</a>
+      {{#if isUser}}
       <ul class="pure-menu-list">
         <li class="pure-menu-item"><a href="/timetrack/new" class="pure-menu-link">Work<i class="fa fa-exclamation"></i></a>
         </li>
@@ -30,9 +33,7 @@
           </ul>
         </li>
       </ul>
-    </div>
-    <div class="pull-right">
-      {{> loginButtons align="right"}}
+      {{/if}}
     </div>
   </div>
 </template>
@@ -42,4 +43,33 @@
   <p>It is good to be at home.</p>
 </template>
 
-    
+
+<template name="ifLoggedIn">
+  {{#if authInProcess}}
+  <i class="fa fa-spinner"></i>
+  {{else}}
+  {{#if canShow}}
+  {{> UI.contentBlock }}
+  {{else}}
+  {{> login}}
+  {{/if}}
+  {{/if}}
+</template>
+
+<template name="login">
+  <div class="login">
+    <h2>It's good to be @home!</h2>
+    <p>Sign in for the fun part.</p>
+    <!--<h1>Boarding <i class='fa fa-plane'></i></h1>-->
+    <form class="pure-form">
+      <fieldset>
+        <!--{{#with defaultCredentials}}-->
+        <input class="email" placeholder="Email" value="{{email}}"/>
+        <input type="password" class="password" placeholder="Password" value="{{password}}"/>
+        <!--{{/with}}-->
+      </fieldset>
+      <button class="signIn pure-button pure-button-primary">Sign in</button>
+    </form>
+  </div>
+</template>    
+        
