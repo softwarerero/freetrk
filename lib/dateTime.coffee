@@ -5,10 +5,14 @@ Date.parseDate = (input, format) ->
 Date.prototype.dateFormat = (format) ->
   moment(this).format(format)
 
-@datePickerOptions =
-#  datepicker: false
-  timepicker: false
-  format: Config.dateFormat
+@dateTimePickerOptions =
+  datepicker: true
+  timepicker: true
+#  format: 'd.m.Y H:i'
+  format: Config.dateTimeFormat
+  dayOfWeekStart: 1
+  closeOnDateSelect: false
+  formatTime: Config.timeFormat
 #    startDate:'+1971/05/01'//or 1986/12/08
 #    onChangeDateTime: (dp, $input) ->
 #      alert($input.val())

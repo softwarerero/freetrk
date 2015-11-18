@@ -7,6 +7,7 @@ https://kadira.io/academy/meteor-routing-guide/content/rendering-blaze-templates
 https://github.com/CollectionFS/Meteor-CollectionFS
 https://github.com/kadirahq/flow-router
 http://xdsoft.net/jqplugins/datetimepicker/
+https://github.com/CodeSeven/toastr (http://codeseven.github.io/toastr/demo.html)
 
 
 ### Packages
@@ -20,12 +21,13 @@ accounts-ui
 check
 fortawesome:fontawesome
 pascoual:pdfkit
-odt-old-archiver 
+odt-old-archiver
 meteorhacks:npm
 cfs:standard-packages cfs:gridfs cfs:ejson-file
 momentjs:moment
 #drewy:pikaday-time
 drewy:datetimepicker
+chrismbeckett:toastr
 
 
 ### Hints

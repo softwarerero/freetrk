@@ -4,6 +4,7 @@ Meteor.methods
 #    return Config.tz.server || jstz.determine().name()
 
   printTimesheet: () ->
+    console.log 'printTimesheet'
     timetracks = Timetrack.find({}, {sort: {date: 1, from: 1}})
     Meteor.wrapAsync createOdt timetracks
 
@@ -11,7 +12,7 @@ Meteor.methods
     console.log 'saveTimesheetTemplate: ' + JSON.stringify original
     Settings.upsert {userId: Meteor.userId()}, {$set: {userId: Meteor.userId(), timesheet: fileObj, timeSheetName: original.name}}
     
-# refactor    
+#TODO: refactor    
 createOdt = (timetracks) ->
   odt = Meteor.npmRequire('odt-old-archiver')
   table = Meteor.npmRequire('odt-old-archiver/lib/handler').table
@@ -24,11 +25,12 @@ createOdt = (timetracks) ->
     throw new Meteor.Error 'no-timesheet', 'You must upload a timesheet under settings first!'
   doc = fileObj.getFileRecord().createReadStream()
   
+  #TODO: create data on client
   values =
-    "customer": { "type": "string", "value": "A Customer" }
+    "customer": { "type": "string", "value": "A Customer\n\nwhat happen's with many\nlines?" }
     "project": { "type": "string", "value": "hallo2" }
     "invoice_period": { "type": "string", "value": "This month" }
-    "hours_worked": { "type": "string", "value": "10" }
+    "hours_billable": { "type": "string", "value": "10" }
     "hours_non_billable": { "type": "string", "value": "20" }
     "datefield": 
       "type": "date",
