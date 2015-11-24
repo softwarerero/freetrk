@@ -34,7 +34,16 @@ adminSection.route '/project',
 
 adminSection.route '/project/:_id',
   action: () -> BlazeLayout.render "mainLayout", {content: "project"}
-    
+
+adminSection.route '/customers',
+  action: () -> BlazeLayout.render "mainLayout", {content: "customers"}
+
+adminSection.route '/customer',
+  action: () -> BlazeLayout.render "mainLayout", {content: "customer"}
+
+adminSection.route '/customer/:_id',
+  action: () -> BlazeLayout.render "mainLayout", {content: "customer"}
+
 superAdminSection = adminSection.group
   prefix: "/super"
 

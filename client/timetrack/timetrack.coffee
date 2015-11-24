@@ -1,9 +1,31 @@
+Template.timetracks.onRendered ->
+  $('#project').select2()
+  $('#from').datetimepicker dateTimePickerOptions
+  $('#to').datetimepicker dateTimePickerOptions
+  
 Template.timetracks.helpers
   timetracks: () ->
-    Timetrack.find({}, {sort: {date: -1, from: -1}})
+    projects = FlowRouter.getQueryParam 'projects'
+    query = if projects then {project: {$in: projects}} else {}
+    from = FlowRouter.getQueryParam 'from'
+    if from
+      from = moment from, 'X'
+      query.from = {$gte: from.toDate()}
+    to = FlowRouter.getQueryParam 'to'
+    if to
+      to = moment to, 'X'
+      query.to = {$lte: to.toDate()}
+    LOGJ 'query', query
+    Timetrack.find query, {sort: {date: -1, from: -1}}
   projectName: (_id) ->
     project = Projects.findOne {_id: _id}
     project?.name
+  projects: () -> Projects.find({}, {sort: {name: 1}})
+  isSelected: (project) ->
+    projects = FlowRouter.getQueryParam 'projects'
+    projects && (project in projects)
+  firstOfMonth: -> moment().startOf('month').format(Config.dateTimeFormat)
+  lastOfMonth: -> moment().endOf('month').format(Config.dateTimeFormat)
 
 Template.timetracks.events
   'click .fa-plus': (event, template) ->
@@ -16,8 +38,23 @@ Template.timetracks.events
     Timetrack.remove {_id: _id}
   'click .odt': (event, template) ->
     event.preventDefault()
-    Meteor.call 'printTimesheet'
-#    FlowRouter.go '/timetrack/new'
+    projects = FlowRouter.getQueryParam 'projects'
+    Meteor.call 'printTimesheet', projects
+  'change #project': (event, template) ->
+    projects = $(project).val()
+    FlowRouter.setQueryParams {projects: projects}
+  'change #from': (event, template) ->
+    from = template.find('#from').value
+    if from
+      from += ' +0000'
+      from = moment from, Config.dateTimeFormat + ' Z'
+      FlowRouter.setQueryParams {from: from.format 'X'}
+  'change #to': (event, template) ->
+    to = template.find('#to').value
+    if to
+      to += ' +0000'
+      to = moment to, Config.dateTimeFormat + ' Z'
+      FlowRouter.setQueryParams {to: to.format 'X'}
 
 Template.timetrack.onRendered ->
   $('#from').datetimepicker dateTimePickerOptions
@@ -26,7 +63,6 @@ Template.timetrack.onRendered ->
   setDateAndTime _id
   
 setDateAndTime = (_id) ->
-  console.log 'setDateAndTime'
   if 'new' == _id
     now = new Date()
     $('#from').datetimepicker {value: now}
@@ -46,9 +82,7 @@ Template.timetrack.helpers
         project: Session.get 'lastProject'
       return track
     Timetrack.findOne {_id: _id}
-  projects: () ->
-#    console.log Projects.find({}, {sort: {name: 1}})
-    Projects.find({}, {sort: {name: 1}})
+  projects: () -> Projects.find({}, {sort: {name: 1}})
   isSelected: (project) ->
     _id = FlowRouter.getParam('_id')
     if 'new' is _id

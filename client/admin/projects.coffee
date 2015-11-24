@@ -1,6 +1,9 @@
 Template.projects.helpers
   projects: () ->
     Projects.find({}, {sort: {name: 1}})
+  customerName: (_id) ->
+    customer = Customers.findOne {_id: _id}
+    customer?.name
 
 Template.projects.events
   'click .fa-plus': (event, template) ->
@@ -12,28 +15,40 @@ Template.projects.events
     _id = event.currentTarget.parentNode.parentNode.getAttribute 'id'
     Projects.remove {_id: _id}
 
+
+Template.project.onRendered ->
+  $('#customer').select2()
+
 Template.project.helpers
+  customers: () -> Customers.find({}, {sort: {name: 1}})
   project: () ->
     _id = FlowRouter.getParam('_id')
     if !_id then return {}
 #    console.log '_id: ' + _id
 #    console.log JSON.stringify Projects.findOne {_id: _id}
     Projects.findOne {_id: _id}
-
+  isSelected: (customer) -> 
+    _id = FlowRouter.getParam('_id')
+    project = Projects.findOne {_id: _id}
+    LOGJ 'project', project
+    project?.customer is customer
+    
 Template.project.events
   'click .save': (event, template) ->
     event.preventDefault()
     _id = template.find('#_id').value
-    name = template.find('#name').value
-    rate = template.find('#rate').value
-    check name, NonEmptyString
-    Projects.upsert {_id: _id}, {user: Meteor.userId(), name: name, rate: rate}
+    obj =
+      user: Meteor.userId()
+      name: template.find('#name').value
+      rate: template.find('#rate').value
+      customer: template.find('#customer').value
+#    LOG 'customer', customer
+#    LOGJ 'obj', obj
+    check obj.name, NonEmptyString
+    Projects.upsert {_id: _id}, {$set: obj}
     FlowRouter.go '/admin/projects'
   'click .back': (event, template) ->
     event.preventDefault()
     FlowRouter.go '/admin/projects'
 
 
-@NonEmptyString = Match.Where (x) ->
-  check(x, String)
-  x.length > 0

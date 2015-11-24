@@ -51,3 +51,29 @@ main {
     text-align: right;
   }
 }
+
+
+
+/* Make Select2 look like a Pure.css input */
+.select2-container .select2-selection--single .select2-selection__rendered {
+  padding-top: 3px;
+}
+.select2-container .select2-search--inline .select2-search__field {
+  margin: 0px !important;
+  margin-top: 5px !important;
+  padding: 4px 0px 3px 0px !important;
+  visibility: hidden;
+}
+
+.select2-container--default .select2-selection--single, 
+.select2-container--default .select2-selection--multiple {
+  border: 1px solid #CCC;
+  box-shadow: 0px 1px 3px #DDD inset;
+  border-radius: 4px;
+  min-height: 35px;
+}
+
+.select2-container--default .select2-selection--multiple:focus {
+  border-color: #129FEA;
+}
+

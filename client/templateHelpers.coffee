@@ -4,6 +4,9 @@ Template.registerHelper 'appName', ->
 Template.registerHelper 'formatDateTime', (date) ->
   moment(date).format Config.dateTimeFormat
 
+Template.registerHelper 'formatIndustrialTime', (number) ->
+  number.toFixed 2
+
 Template.registerHelper 'isUser', ->
   !!Meteor.user()
 
@@ -20,4 +23,6 @@ Meteor.startup ->
 
 @ERROR = (msg, title='') ->
 #  console.log msg
-  toastr.error(msg, title)    
+  toastr.error(msg, title)
+
+

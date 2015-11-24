@@ -3,10 +3,12 @@ Meteor.methods
 #  getTimezone: () ->
 #    return Config.tz.server || jstz.determine().name()
 
-  printTimesheet: () ->
-    console.log 'printTimesheet'
-    timetracks = Timetrack.find({}, {sort: {date: 1, from: 1}})
-    Meteor.wrapAsync createOdt timetracks
+  printTimesheet: (projects) ->
+    LOG 'printTimesheet', projects
+    query = if projects then {project: {$in: projects}} else {}
+    timetracks = Timetrack.find query, {sort: {date: 1, from: 1}}
+#    Meteor.wrapAsync createOdt timetracks
+    createOdt timetracks
 
   saveTimesheetTemplate: (fileObj, original) ->
     console.log 'saveTimesheetTemplate: ' + JSON.stringify original
@@ -27,6 +29,19 @@ createOdt = (timetracks) ->
   
   #TODO: create data on client
   values =
+    customer_name: { "type": "string", "value": "Name" }
+    customer_address1: { "type": "string", "value": "Address1" }
+    customer_address2: { "type": "string", "value": "Address2" }
+    customer_address3: { "type": "string", "value": "Address3" }
+    customer_address4: { "type": "string", "value": "Address4" }
+    customer_no: { "type": "string", "value": "1234" }
+    invoice_date: { "type": "string", "value": "18.11.2015" }
+    invoice_no: { "type": "string", "value": "1234" }
+    net_sum: { "type": "string", "value": "10" }
+    vat: { "type": "string", "value": "1" }
+    total: { "type": "string", "value": "11" }
+    payable: { "type": "string", "value": "Payable within 15 days via Western Union, Bank Transfer or Paypal." }
+    
     "customer": { "type": "string", "value": "A Customer\n\nwhat happen's with many\nlines?" }
     "project": { "type": "string", "value": "hallo2" }
     "invoice_period": { "type": "string", "value": "This month" }
@@ -39,23 +54,37 @@ createOdt = (timetracks) ->
       "type": "cent",
       "value": "999999999"
 
-  console.log JSON.stringify values
-  tableData = mongo2Table timetracks
-  
-  odtDone = Async.runSync (done) ->
-    odt
-      .template(doc)
-      .apply(values)
-      .apply(table(tableData))
-      .on 'error', (err) ->
-        console.log 'err: ' + err
-        throw err
-      .finalize (bytes) ->
-        console.log('The document is ' + bytes + ' bytes large.')
-      .pipe(fs.createWriteStream(odtFileName))
-      .on 'close', () ->
-        console.log('document written')
+  positions = {Positions: [{
+    pos_no: { "type": "string", "value": "1" }
+    pos_quantity: { "type": "string", "value": "2" }
+    pos_text: { "type": "string", "value": "Irgendwas" }
+    pos_price: { "type": "string", "value": "5" }
+    pos_sum: { "type": "string", "value": "10" }
+  }]}
+      
 
+#  console.log JSON.stringify values
+  timetable = mongo2Table timetracks
+  LOGJ 'timetable', timetable
+#  LOGJ 'positions', positions
+  
+#  odtDone = Async.runSync (done) ->
+  odt
+    .template(doc)
+    .apply(values)
+    .apply(table(positions))
+    .apply(table(timetable))
+    .on 'error', (err) ->
+      console.log 'err: ' + err
+      throw err
+    .finalize (bytes) ->
+      console.log('The document is ' + bytes + ' bytes large.')
+    .pipe(fs.createWriteStream(odtFileName))
+    .on 'close', () ->
+      console.log('document written')
+#      done(null, 'document written')
+#  return odtDone
+        
 mongo2Table = (timetracks) ->
   rows = []
   for tt in timetracks.fetch()
@@ -67,4 +96,4 @@ mongo2Table = (timetracks) ->
       tt_feature: {type: 'string', value: tt.feature}
       tt_task: {type: 'string', value: tt.task}
     rows.push row
-  {Tabelle1: rows}
+  {Timetable: rows}
