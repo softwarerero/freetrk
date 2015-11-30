@@ -5,8 +5,8 @@ Meteor.methods
 
   printTimesheet: (projects) ->
     LOG 'printTimesheet', projects
-    query = if projects then {project: {$in: projects}} else {}
-    timetracks = Timetrack.find query, {sort: {date: 1, from: 1}}
+    query = if projects then {projectId: {$in: projects}} else {}
+    timetracks = Timetrack.find query, {sort: {from: 1}}
 #    Meteor.wrapAsync createOdt timetracks
     createOdt timetracks
 
@@ -18,7 +18,8 @@ Meteor.methods
 createOdt = (timetracks) ->
   odt = Meteor.npmRequire('odt-old-archiver')
   table = Meteor.npmRequire('odt-old-archiver/lib/handler').table
-  fs = Meteor.npmRequire('fs')
+  fs = Meteor.npmRequire 'fs'
+#  stream = Meteor.npmRequire 'stream'
 
   odtFileName = Config.tmpPath + '/' + 'timesheet_' + Meteor.userId() + '-' + Date.now() + '.odt'
   settings = Settings.findOne {userId: Meteor.userId()}
@@ -65,8 +66,15 @@ createOdt = (timetracks) ->
 
 #  console.log JSON.stringify values
   timetable = mongo2Table timetracks
-  LOGJ 'timetable', timetable
+#  LOGJ 'timetable', timetable
 #  LOGJ 'positions', positions
+  
+#  outStream = new stream.Writable()
+#  outBuffer = buffer
+  Future = Npm.require 'fibers/future'
+  fut = new Future()
+  MemoryStream = Meteor.npmRequire 'memorystream'
+  memStream = new MemoryStream()
   
 #  odtDone = Async.runSync (done) ->
   odt
@@ -79,20 +87,34 @@ createOdt = (timetracks) ->
       throw err
     .finalize (bytes) ->
       console.log('The document is ' + bytes + ' bytes large.')
+#      LOG 'memStream', memStream
+      fut.return odtFileName
     .pipe(fs.createWriteStream(odtFileName))
-    .on 'close', () ->
-      console.log('document written')
+#    .pipe(memStream)
+#    .on 'close', (d) ->
+#      console.log('document written: ' + d)
+#      fut.return(d)
+#    .on 'end', (a, b) ->
+#      console.log('end.a: ' + a)
+#      console.log('end.b: ' + b)
+#      fut.return(d)
+#    .end (data) -> LOG 'end', data
+#    .done (err, data) -> LOG 'done', data
 #      done(null, 'document written')
 #  return odtDone
+  fut.wait()
+  {url: odtFileName}
+#  LOGJ 'data', data
+#  return data
+#  base64String = new Buffer(data).toString('base64')
         
 mongo2Table = (timetracks) ->
   rows = []
   for tt in timetracks.fetch()
     row =
-      tt_date: {type: 'string', value: tt.date}
-      tt_from: {type: 'string', value: tt.from}
-      tt_to: {type: 'string', value: tt.to}
-      tt_time: {type: 'string', value: tt.time}
+      tt_from: {type: 'string', value: moment(tt.from).format(Config.dateTimeFormatShort)}
+      tt_to: {type: 'string', value: moment(tt.to).format(Config.dateTimeFormatShort)}
+      tt_time: {type: 'string', value: tt.time.toFixed(2)}
       tt_feature: {type: 'string', value: tt.feature}
       tt_task: {type: 'string', value: tt.task}
     rows.push row

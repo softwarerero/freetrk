@@ -2,6 +2,7 @@
 @Timetrack = new Mongo.Collection("timetrack")
 @Settings = new Mongo.Collection("settings")
 @Customers = new Mongo.Collection("customers")
+@Invoices = new Mongo.Collection("invoices")
 
 #templateStore = new FS.Store.GridFS "templateFiles"
 #  mongoUrl: 'mongodb:#127.0.0.1:27017/test/', # optional, defaults to Meteor's local MongoDB
@@ -35,3 +36,5 @@
 #      $query: {'metadata.owner': userId}
 #      $orderby: {uploadedAt: -1}
 #  ] 
+
+

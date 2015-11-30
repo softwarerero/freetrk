@@ -3,3 +3,4 @@
 *.iml
 packages
 lib/config.coffee
+*.log

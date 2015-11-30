@@ -40,12 +40,13 @@ Template.project.events
     obj =
       user: Meteor.userId()
       name: template.find('#name').value
-      rate: template.find('#rate').value
+      rate: parseInt template.find('#rate').value
       customer: template.find('#customer').value
-#    LOG 'customer', customer
-#    LOGJ 'obj', obj
     check obj.name, NonEmptyString
-    Projects.upsert {_id: _id}, {$set: obj}
+    if _id
+      Projects.update {_id: _id}, {$set: obj}
+    else
+      Projects.insert obj
     FlowRouter.go '/admin/projects'
   'click .back': (event, template) ->
     event.preventDefault()

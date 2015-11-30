@@ -14,7 +14,7 @@ Template.registerHelper 'isUser', ->
   
 # Toastr
 Meteor.startup ->
-  toastr.options.positionClass = "toast-top-full-width"
+  toastr.options.positionClass = "toast-top-right"
   toastr.options.progressBar = true
   
 @SUCCESS = (msg, title='') -> toastr.success(msg, title)

@@ -20,6 +20,17 @@ timetrackSection.route '/',
 timetrackSection.route '/:_id',
   action: () -> BlazeLayout.render "mainLayout", {content: "timetrack"}
 
+
+invoiceSection = FlowRouter.group
+  prefix: "/invoice"
+
+invoiceSection.route '/',
+  action: () -> BlazeLayout.render "mainLayout", {content: "invoices"}
+
+invoiceSection.route '/:_id',
+  action: () -> BlazeLayout.render "mainLayout", {content: "invoice"}    
+    
+    
 adminSection = FlowRouter.group
   prefix: "/admin"
 

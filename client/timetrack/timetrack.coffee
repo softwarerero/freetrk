@@ -1,12 +1,12 @@
 Template.timetracks.onRendered ->
-  $('#project').select2()
+  $('#projectId').select2()
   $('#from').datetimepicker dateTimePickerOptions
   $('#to').datetimepicker dateTimePickerOptions
   
 Template.timetracks.helpers
   timetracks: () ->
     projects = FlowRouter.getQueryParam 'projects'
-    query = if projects then {project: {$in: projects}} else {}
+    query = if projects then {projectId: {$in: projects}} else {}
     from = FlowRouter.getQueryParam 'from'
     if from
       from = moment from, 'X'
@@ -15,15 +15,14 @@ Template.timetracks.helpers
     if to
       to = moment to, 'X'
       query.to = {$lte: to.toDate()}
-    LOGJ 'query', query
-    Timetrack.find query, {sort: {date: -1, from: -1}}
+    Timetrack.find query, {sort: {from: -1}}
   projectName: (_id) ->
     project = Projects.findOne {_id: _id}
     project?.name
   projects: () -> Projects.find({}, {sort: {name: 1}})
-  isSelected: (project) ->
+  isSelected: (projectId) ->
     projects = FlowRouter.getQueryParam 'projects'
-    projects && (project in projects)
+    projects && (projectId in projects)
   firstOfMonth: -> moment().startOf('month').format(Config.dateTimeFormat)
   lastOfMonth: -> moment().endOf('month').format(Config.dateTimeFormat)
 
@@ -39,9 +38,12 @@ Template.timetracks.events
   'click .odt': (event, template) ->
     event.preventDefault()
     projects = FlowRouter.getQueryParam 'projects'
-    Meteor.call 'printTimesheet', projects
-  'change #project': (event, template) ->
-    projects = $(project).val()
+    Meteor.call 'printTimesheet', projects, (error, data) ->
+      LOG 'data', data
+      window.open(data.url)
+#      window.open "data:application/vnd.oasis.opendocument.text;base64, " + data
+  'change #projectId': (event, template) ->
+    projects = $(projectId).val()
     FlowRouter.setQueryParams {projects: projects}
   'change #from': (event, template) ->
     from = template.find('#from').value
@@ -63,14 +65,16 @@ Template.timetrack.onRendered ->
   setDateAndTime _id
   
 setDateAndTime = (_id) ->
+  if !_id then return
   if 'new' == _id
     now = new Date()
     $('#from').datetimepicker {value: now}
     $('#to').datetimepicker {value: now}
   else
     track = Timetrack.findOne {_id: _id}
-    $('#from').datetimepicker {value: track.from}
-    $('#to').datetimepicker {value: track.to}
+    if track
+      $('#from').datetimepicker {value: track.from}
+      $('#to').datetimepicker {value: track.to}
 
 Template.timetrack.helpers
   timetrack: () ->
@@ -83,13 +87,13 @@ Template.timetrack.helpers
       return track
     Timetrack.findOne {_id: _id}
   projects: () -> Projects.find({}, {sort: {name: 1}})
-  isSelected: (project) ->
+  isSelected: (projectId) ->
     _id = FlowRouter.getParam('_id')
     if 'new' is _id
-      Session.get('lastProject') is project
+      Session.get('lastProject') is projectId
     else
       timetrack = Timetrack.findOne {_id: _id}
-      timetrack.project == project
+      timetrack.projectId == projectId
 
 Template.timetrack.events
   'change #from': (event, template) ->
@@ -108,7 +112,7 @@ Template.timetrack.events
       from: momentFrom.toDate()
       to: momentTo.toDate()
       time: time
-      project: template.find('#project').value
+      projectId: template.find('#projectId').value
       feature: template.find('#feature').value
       task: template.find('#task').value
       billable: template.find('#billable').checked
@@ -118,15 +122,24 @@ Template.timetrack.events
         from: Date
         to: Match.Optional(Date)
         time: Match.Optional(Number)
-        project: NonEmptyString
+        projectId: NonEmptyString
         feature: Match.Optional(String)
         task: Match.Optional(String)
         billable: Boolean
         userId: String
 #    console.log 'timetrack: ' + JSON.stringify timetrack
+#      Timetrack.upsert {_id: _id}, timetrack
+#      Meteor.call 'upsertTimetrack', _id, timetrack
+      if _id
+        Timetrack.update {_id: _id}, {$set: timetrack}
+        FlowRouter.go '/timetrack'
+      else
+        Timetrack.insert timetrack        
+        FlowRouter.go '/timetrack/new'
+#        TODO: clear fields
+        template.find('#feature').value = ''
+        template.find('#task').value = ''
       SUCCESS 'You worked!'
-      Timetrack.upsert {_id: _id}, timetrack
-      FlowRouter.go '/timetrack/new'
     catch error
       ERROR error
 

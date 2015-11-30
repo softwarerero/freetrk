@@ -1,10 +1,3 @@
-#customer_name: { "type": "string", "value": "Name" }
-#customer_address1: { "type": "string", "value": "Address1" }
-#customer_address2: { "type": "string", "value": "Address2" }
-#customer_address3: { "type": "string", "value": "Address3" }
-#customer_address4: { "type": "string", "value": "Address4" }
-#customer_no: { "type": "string", "value": "1234" }
-#
 Template.customers.helpers
   customers: () ->
     Customers.find({}, {sort: {name: 1}})
@@ -34,11 +27,16 @@ Template.customer.events
         user: Meteor.userId()
         name: template.find('#name').value
         no: template.find('#no').value
+        vat: template.find('#vat').value
         address: template.find('#address').value
       check obj.name, NonEmptyString
-      SUCCESS 'Customer saved!'
-      Customers.upsert {_id: _id}, obj
+      if _id
+        Customers.update {_id: _id}, {$set: obj}
+      else
+        Customers.insert obj
+#      Customers.upsert {_id: _id}, obj
       FlowRouter.go '/admin/customers'
+      SUCCESS 'Customer saved!'
     catch error
       ERROR error
   'click .back': (event, template) ->

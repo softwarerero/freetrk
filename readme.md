@@ -10,6 +10,8 @@ http://xdsoft.net/jqplugins/datetimepicker/
 https://github.com/CodeSeven/toastr (http://codeseven.github.io/toastr/demo.html)
 https://select2.github.io/examples.html
 http://momentjs.com/docs/
+https://github.com/RetireJS/retire.js
+http://codeseven.github.io/toastr/demo.html
 
 
 ### Packages

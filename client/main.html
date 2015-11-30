@@ -26,6 +26,7 @@
         <li class="pure-menu-item"><a href="/timetrack/new" class="pure-menu-link">Work<i class="fa fa-exclamation"></i></a>
         </li>
         <li class="pure-menu-item"><a href="/timetrack" class="pure-menu-link">Timetrack</a></li>
+        <li class="pure-menu-item"><a href="/invoice" class="pure-menu-link">Invoices</a></li>
         <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
           <a href="/admin" id="menuLink1" class="pure-menu-link">Settings</a>
           <ul class="pure-menu-children">
@@ -42,6 +43,8 @@
 
 <template name="home">
   <p>It is good to be at home.</p>
+  Hours Billable: {{stats.hoursBillable}}
+  <br/>Amount billable: {{stats.billable}}
 </template>
 
 

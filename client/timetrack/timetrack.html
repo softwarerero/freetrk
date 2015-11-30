@@ -1,8 +1,8 @@
 <template name="timetracks">
   <div>
     <a href="" class="pure-button odt">Odt</a>
-    <label for="project">Project</label>
-    <select id="project" class="pure-u-12-24" multiple>
+    <label for="projectId">Project</label>
+    <select id="projectId" class="pure-u-12-24" multiple>
       {{#each projects}}
       <option value="{{_id}}" selected={{isSelected _id}}>{{name}}</option>
       {{/each}}
@@ -17,7 +17,7 @@
     </form>
   </div>
 
-  <table class="pure-table">
+  <table class="timetracks pure-table">
     <thead>
     <tr>
       <th>From</th>
@@ -32,12 +32,12 @@
     <tbody>
     {{#each timetracks}}
     <tr class="" id="{{_id}}">
-      <td>{{formatDateTime from}}</td>
-      <td>{{formatDateTime to}}</td>
+      <td class="from">{{formatDateTime from}}</td>
+      <td class="to">{{formatDateTime to}}</td>
       <td>{{formatIndustrialTime time}}</td>
-      <td>{{projectName project}}</td>
+      <td>{{projectName projectId}}</td>
       <td>{{feature}}</td>
-      <td>
+      <td class="actions">
         <i class="fa fa-pencil-square-o action edit"></i>
         <span> </span>
         <i class="fa fa-trash action action remove"></i>
@@ -72,8 +72,8 @@
         </div>
 
         <div class="pure-u-1 pure-u-md-1-4">
-          <label for="project">Project</label>
-          <select id="project" class="pure-u-24-24">
+          <label for="projectId">Project</label>
+          <select id="projectId" class="pure-u-24-24">
             <option value="">-</option>
             {{#each projects}}
               <option value="{{_id}}" selected={{isSelected _id}}>{{name}}</option>
