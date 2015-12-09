@@ -24,3 +24,11 @@ Date.prototype.dateFormat = (format) ->
   timepicker: true
   format: Config.timeFormat
   step: 15
+
+
+@unixTimestamp2Date = (ts) ->
+  if typeof ts is 'string'
+    ts = parseInt ts
+  new Date parseInt ts*1000
+  
+  

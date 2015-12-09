@@ -3,9 +3,15 @@ Meteor.methods
 #  getTimezone: () ->
 #    return Config.tz.server || jstz.determine().name()
 
-  printTimesheet: (projects) ->
-    LOG 'printTimesheet', projects
-    query = if projects then {projectId: {$in: projects}} else {}
+  printTimesheet: (params) ->
+#    LOGJ 'printTimesheet', params
+    query = {}
+    if params.projects
+      query.projectId = {$in: params.projects}
+    if params.from
+      query.from = {$gte: unixTimestamp2Date params.from}
+    if params.to
+      query.to = {$lte: unixTimestamp2Date params.to}
     timetracks = Timetrack.find query, {sort: {from: 1}}
 #    Meteor.wrapAsync createOdt timetracks
     createOdt timetracks

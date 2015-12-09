@@ -2,7 +2,11 @@ Template.timetracks.onRendered ->
   $('#projectId').select2()
   $('#from').datetimepicker dateTimePickerOptions
   $('#to').datetimepicker dateTimePickerOptions
-  
+  momentFrom = moment(from.value, Config.dateTimeFormat)
+  FlowRouter.setQueryParams {from: momentFrom.format 'X'}
+  momentTo = moment(to.value, Config.dateTimeFormat)
+  FlowRouter.setQueryParams {to: momentTo.format 'X'}
+
 Template.timetracks.helpers
   timetracks: () ->
     projects = FlowRouter.getQueryParam 'projects'
@@ -37,29 +41,30 @@ Template.timetracks.events
     Timetrack.remove {_id: _id}
   'click .odt': (event, template) ->
     event.preventDefault()
-    projects = FlowRouter.getQueryParam 'projects'
-#    params = FlowRouter.getQueryParams()
-#    LOGJ 'params', params
-    _qs = FlowRouter._qs
-    LOGJ '_qs', _qs
-#    Meteor.call 'printTimesheet', projects, (error, data) ->
-#      LOG 'data', data
-#      window.open(data.url)
-#      window.open "data:application/vnd.oasis.opendocument.text;base64, " + data
+    moment(from.value, Config.dateTimeFormat)
+    params =
+      projects: FlowRouter.getQueryParam 'projects'
+      from: FlowRouter.getQueryParam 'from'
+      to: FlowRouter.getQueryParam 'to'
+    LOGJ 'params', params
+    Meteor.call 'printTimesheet', params, (error, data) ->
+      LOG 'data', data
+      if data
+        window.open(data.url)
+        window.open "data:application/vnd.oasis.opendocument.text;base64, " + data
   'change #projectId': (event, template) ->
     projects = $(projectId).val()
+    LOGJ 'projects', projects
     FlowRouter.setQueryParams {projects: projects}
   'change #from': (event, template) ->
     from = template.find('#from').value
     if from
-      from += ' +0000'
-      from = moment from, Config.dateTimeFormat + ' Z'
+      from = tdateToMoment from
       FlowRouter.setQueryParams {from: from.format 'X'}
   'change #to': (event, template) ->
     to = template.find('#to').value
     if to
-      to += ' +0000'
-      to = moment to, Config.dateTimeFormat + ' Z'
+      from = tdateToMoment from
       FlowRouter.setQueryParams {to: to.format 'X'}
 
 Template.timetrack.onRendered ->
