@@ -3,9 +3,10 @@ Template.timetracks.onRendered ->
   $('#from').datetimepicker dateTimePickerOptions
   $('#to').datetimepicker dateTimePickerOptions
   momentFrom = moment(from.value, Config.dateTimeFormat)
-  FlowRouter.setQueryParams {from: momentFrom.format 'X'}
-  momentTo = moment(to.value, Config.dateTimeFormat)
-  FlowRouter.setQueryParams {to: momentTo.format 'X'}
+#  LOG 'b', momentFrom.format()
+#  FlowRouter.setQueryParams {from: momentFrom.format 'X'}
+#  momentTo = moment(to.value, Config.dateTimeFormat)
+#  FlowRouter.setQueryParams {to: momentTo.format 'X'}
 
 Template.timetracks.helpers
   timetracks: () ->
@@ -27,8 +28,18 @@ Template.timetracks.helpers
   isSelected: (projectId) ->
     projects = FlowRouter.getQueryParam 'projects'
     projects && (projectId in projects)
-  firstOfMonth: -> moment().startOf('month').format(Config.dateTimeFormat)
-  lastOfMonth: -> moment().endOf('month').format(Config.dateTimeFormat)
+  firstOfMonth: ->
+    from = FlowRouter.getQueryParam 'from'
+    LOG 'from', from
+#    from = if from then moment from, 'X' else moment().startOf('month')
+    if from
+      from = moment from, 'X'
+      from.format(Config.dateTimeFormat)
+  lastOfMonth: ->
+    to = FlowRouter.getQueryParam 'to'
+    if to
+      to = moment to, 'X'
+      to.format(Config.dateTimeFormat)
 
 Template.timetracks.events
   'click .fa-plus': (event, template) ->
@@ -46,9 +57,7 @@ Template.timetracks.events
       projects: FlowRouter.getQueryParam 'projects'
       from: FlowRouter.getQueryParam 'from'
       to: FlowRouter.getQueryParam 'to'
-    LOGJ 'params', params
     Meteor.call 'printTimesheet', params, (error, data) ->
-      LOG 'data', data
       if data
         window.open(data.url)
         window.open "data:application/vnd.oasis.opendocument.text;base64, " + data
@@ -66,6 +75,23 @@ Template.timetracks.events
     if to
       from = tdateToMoment from
       FlowRouter.setQueryParams {to: to.format 'X'}
+  'click #none': (event, template) ->
+    console.log 'none'
+    FlowRouter.setQueryParams {from: null, to: null}
+    template.find('#from').value = ''
+    template.find('#to').value = ''
+  'click #month': (event, template) ->
+    FlowRouter.setQueryParams {from: moment().startOf('month').format 'X'}
+    FlowRouter.setQueryParams {to: moment().endOf('month').format 'X'}
+  'click #week': (event, template) ->
+    FlowRouter.setQueryParams {from: moment().startOf('week').format 'X'}
+    FlowRouter.setQueryParams {to: moment().endOf('week').format 'X'}
+  'click #day': (event, template) ->
+    FlowRouter.setQueryParams {from: moment().startOf('day').format 'X'}
+    FlowRouter.setQueryParams {to: moment().endOf('day').format 'X'}
+  'click #year': (event, template) ->
+    FlowRouter.setQueryParams {from: moment().startOf('year').format 'X'}
+    FlowRouter.setQueryParams {to: moment().endOf('year').format 'X'}
 
 Template.timetrack.onRendered ->
   $('#from').datetimepicker dateTimePickerOptions

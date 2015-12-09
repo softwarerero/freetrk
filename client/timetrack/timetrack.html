@@ -1,52 +1,68 @@
 <template name="timetracks">
-  <div>
-    <a href="" class="pure-button odt">Odt</a>
-    <label for="projectId">Project</label>
-    <select id="projectId" class="pure-u-12-24" multiple>
-      {{#each projects}}
-      <option value="{{_id}}" selected={{isSelected _id}}>{{name}}</option>
-      {{/each}}
-    </select>
+  <div class="timetracks">
     <form class="pure-form">
       <fieldset>
+        <a href="" class="pure-button odt">Odt</a>
+        <label for="projectId">Project</label>
+        <select id="projectId" class="pure-u-12-24" multiple>
+          {{#each projects}}
+          <option value="{{_id}}" selected={{isSelected _id
+          }}>{{name}}</option>
+          {{/each}}
+        </select>
+      </fieldset>
+      <fieldset class="time-fields">
         <label for="from">From</label>
         <input id="from" class="" required value="{{firstOfMonth}}">
         <label for="to">To</label>
         <input id="to" class="" value="{{lastOfMonth}}">
       </fieldset>
+      <div class="switch-toggle switch-candy">
+        <input id="none" name="view" type="radio" checked>
+        <label for="none" onclick="">None</label>
+        <input id="month" name="view" type="radio">
+        <label for="month" onclick="">Month</label>
+        <input id="week" name="view" type="radio">
+        <label for="week" onclick="">Week</label>
+        <input id="day" name="view" type="radio">
+        <label for="day" onclick="">Day</label>
+        <input id="year" name="view" type="radio">
+        <label for="year" onclick="">Year</label>
+        <a></a>
+      </div>
     </form>
+
+    <table class="pure-table">
+      <thead>
+      <tr>
+        <th>From</th>
+        <th>To</th>
+        <th>Time</th>
+        <th>Project</th>
+        <th>Feature</th>
+        <th><i class="fa fa-plus action th-action"></i></th>
+      </tr>
+      </thead>
+
+      <tbody>
+      {{#each timetracks}}
+      <tr class="" id="{{_id}}">
+        <td class="from">{{formatDateTime from}}</td>
+        <td class="to">{{formatDateTime to}}</td>
+        <td>{{formatIndustrialTime time}}</td>
+        <td>{{projectName projectId}}</td>
+        <td>{{feature}}</td>
+        <td class="actions">
+          <i class="fa fa-pencil-square-o action edit"></i>
+          <span> </span>
+          <i class="fa fa-trash action action remove"></i>
+        </td>
+      </tr>
+      {{/each}}
+
+      </tbody>
+    </table>
   </div>
-
-  <table class="timetracks pure-table">
-    <thead>
-    <tr>
-      <th>From</th>
-      <th>To</th>
-      <th>Time</th>
-      <th>Project</th>
-      <th>Feature</th>
-      <th><i class="fa fa-plus action th-action"></i></th>
-    </tr>
-    </thead>
-
-    <tbody>
-    {{#each timetracks}}
-    <tr class="" id="{{_id}}">
-      <td class="from">{{formatDateTime from}}</td>
-      <td class="to">{{formatDateTime to}}</td>
-      <td>{{formatIndustrialTime time}}</td>
-      <td>{{projectName projectId}}</td>
-      <td>{{feature}}</td>
-      <td class="actions">
-        <i class="fa fa-pencil-square-o action edit"></i>
-        <span> </span>
-        <i class="fa fa-trash action action remove"></i>
-      </td>
-    </tr>
-    {{/each}}
-
-    </tbody>
-  </table>
 </template>
 
 <template name="timetrack">
@@ -76,7 +92,8 @@
           <select id="projectId" class="pure-u-24-24">
             <option value="">-</option>
             {{#each projects}}
-              <option value="{{_id}}" selected={{isSelected _id}}>{{name}}</option>
+            <option value="{{_id}}" selected={{isSelected _id
+            }}>{{name}}</option>
             {{/each}}
           </select>
         </div>

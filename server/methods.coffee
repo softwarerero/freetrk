@@ -12,9 +12,13 @@ Meteor.methods
       query.from = {$gte: unixTimestamp2Date params.from}
     if params.to
       query.to = {$lte: unixTimestamp2Date params.to}
+    query2 =
+      projectId: {$in: params.projects}
+      from: {$gte: unixTimestamp2Date params.from}
+    LOGJ 'query2', query2
     timetracks = Timetrack.find query, {sort: {from: 1}}
 #    Meteor.wrapAsync createOdt timetracks
-    createOdt timetracks
+#    createOdt timetracks
 
   saveTimesheetTemplate: (fileObj, original) ->
     console.log 'saveTimesheetTemplate: ' + JSON.stringify original
