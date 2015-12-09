@@ -38,9 +38,13 @@ Template.timetracks.events
   'click .odt': (event, template) ->
     event.preventDefault()
     projects = FlowRouter.getQueryParam 'projects'
-    Meteor.call 'printTimesheet', projects, (error, data) ->
-      LOG 'data', data
-      window.open(data.url)
+#    params = FlowRouter.getQueryParams()
+#    LOGJ 'params', params
+    _qs = FlowRouter._qs
+    LOGJ '_qs', _qs
+#    Meteor.call 'printTimesheet', projects, (error, data) ->
+#      LOG 'data', data
+#      window.open(data.url)
 #      window.open "data:application/vnd.oasis.opendocument.text;base64, " + data
   'change #projectId': (event, template) ->
     projects = $(projectId).val()

@@ -24,9 +24,8 @@ Template.login.events
 
 Template.home.helpers
   stats: ->
-    firstOfMonth = moment().startOf('month').toDate()
-    lastOfMonth = moment().endOf('month').toDate()
-    LOGJ 'firstOfMonth', firstOfMonth
+    firstOfMonth = moment().subtract(1, 'weeks').startOf('month').toDate()
+    lastOfMonth = moment().subtract(1, 'weeks').endOf('month').toDate()
     timetracks = Timetrack.find {$and: [from: {$gte: firstOfMonth}, to: {$lte: lastOfMonth}]}
     hoursBillable = 0
     hourNonBillable = 0
@@ -34,24 +33,24 @@ Template.home.helpers
     projects = {}
     timetracks.forEach (tt) ->
       project = Projects.findOne {_id: tt.projectId}
-      unless projects[project.name]
-        console.log projects[project.name]
-        projects[project.name] =
-          hoursBillable: 0
-          hourNonBillable: 0
-          billable: 0
-      if tt.billable
-        hoursBillable += tt.time
-        LOGJ 'project', project
-#        LOG 'time', tt.time
-        LOG 'rate', project.rate
-        billable += tt.time * project.rate || 0
-        projects[project.name].hoursBillable += tt.time
-        projects[project.name].billable += tt.time * project.rate || 0
-      else
-        hourNonBillable += tt.time
-        projects[project.name].hourNonBillable += tt.time
-    LOGJ 'projects', projects
+      if project
+        unless projects[project?.name]
+          projects[project.name] =
+            hoursBillable: 0
+            hourNonBillable: 0
+            billable: 0
+        if tt.billable
+          hoursBillable += tt.time
+  #        LOGJ 'project', project
+  #        LOG 'time', tt.time
+  #        LOG 'rate', project.rate
+          billable += tt.time * project.rate || 0
+          projects[project.name].hoursBillable += tt.time
+          projects[project.name].billable += tt.time * project.rate || 0
+        else
+          hourNonBillable += tt.time
+          projects[project.name].hourNonBillable += tt.time
+#    LOGJ 'projects', projects
     stats =
       hoursBillable: hoursBillable
       billable: billable

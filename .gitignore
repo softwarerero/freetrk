@@ -4,3 +4,4 @@
 packages
 lib/config.coffee
 *.log
+ideas.txt
