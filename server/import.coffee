@@ -12,7 +12,6 @@ class Import
   @findCustomer: (name) -> Customers.findOne {name: name}
   @projectId: (name) -> (Projects.findOne {name: name})._id    
   @readCSV: (name) -> fs.readFileSync "#{@path}#{name.toLowerCase()}.csv"
-  @userId: 'dWABLfYHGQZGgmmuH'  
 
   @csv: (customerName, projectName) ->
     customer = @findCustomer customerName
@@ -34,7 +33,7 @@ class Import
       projectId: @projectId fields[4]
       feature: fields[5]
       billable: !!fields[6]
-      userId: @userId
+      userId: Config.importUserId
 
     for line in lines
       if line.length
