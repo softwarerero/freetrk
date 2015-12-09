@@ -37,7 +37,7 @@ natestrauser:select2
 * For odt table.js has to be replaced with https://github.com/domachine/node-odt/blob/master/lib/handler/table.js
 
 ### Ideas
-* https://www.npmjs.com/package/gebo-libreoffice-action - Concert ODT to PDF
+* https://www.npmjs.com/package/gebo-libreoffice-action - Convert ODT to PDF
 * https://github.com/meteorhacks/sikka - DDOS Firewall
 * https://github.com/tommoor/tinycon - display countdown in favicon
 
