@@ -70,6 +70,17 @@ main {
   .pure-table {
     clear: both;
   }
+  .switch-toggle.switch-candy, .switch-light.switch-candy > span {
+    background-color: transparent;
+  }
+  .switch-light.switch-candy span span, .switch-light.switch-candy input:checked ~ span span:first-child, .switch-toggle.switch-candy label {
+    color: #333;
+    text-shadow: none;
+  }
+  .switch-candy a {
+    border: 1px solid #999;
+    background-color: #ddd;
+  }
 }
 
 

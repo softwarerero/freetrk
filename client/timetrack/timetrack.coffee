@@ -30,8 +30,6 @@ Template.timetracks.helpers
     projects && (projectId in projects)
   firstOfMonth: ->
     from = FlowRouter.getQueryParam 'from'
-    LOG 'from', from
-#    from = if from then moment from, 'X' else moment().startOf('month')
     if from
       from = moment from, 'X'
       from.format(Config.dateTimeFormat)
@@ -76,10 +74,7 @@ Template.timetracks.events
       from = tdateToMoment from
       FlowRouter.setQueryParams {to: to.format 'X'}
   'click #none': (event, template) ->
-    console.log 'none'
     FlowRouter.setQueryParams {from: null, to: null}
-    template.find('#from').value = ''
-    template.find('#to').value = ''
   'click #month': (event, template) ->
     FlowRouter.setQueryParams {from: moment().startOf('month').format 'X'}
     FlowRouter.setQueryParams {to: moment().endOf('month').format 'X'}

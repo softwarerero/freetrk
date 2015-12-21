@@ -1,9 +1,9 @@
 fs = Npm.require('fs')
 
-#Meteor.startup ->
+Meteor.startup ->
 #  Timetrack.remove {}
-#  Import.csv 'Scryent'
-#  Import.csv 'Carlypso'
+#  Import.csv 'scryent'
+#  Import.csv 'carlypso'
 
   
 class Import
@@ -17,9 +17,15 @@ class Import
     customer = @findCustomer customerName
     csv = @readCSV customerName.toLowerCase()
     lines = csv.toString().split('\n')
+#    LOGJ 'lines', lines
+#    LOGJ 'lines', lines[57]
     lines.splice(0, 2) # skip headers
-    line2Fields = (line) -> line.split ';'
+#    LOGJ 'lines', lines[0]
+    lines = (line for line in lines when line && line?[0] isnt Config.csvSplitChar)
+#    LOGJ 'lines', lines
+    line2Fields = (line) -> line.split Config.csvSplitChar
     line2Data = (fields) =>
+      if !fields[1] then return
       from = moment fields[0], Config.dateFormat
       to = moment fields[0], Config.dateFormat
       fromRaw = fields[1].split ':'
@@ -37,6 +43,6 @@ class Import
 
     for line in lines
       if line.length
-        console.log JSON.stringify line2Data line2Fields line
+#        console.log JSON.stringify line2Data line2Fields line
         Timetrack.insert line2Data line2Fields line
 

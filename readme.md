@@ -12,7 +12,7 @@ Track hours spend on projects
 * http://momentjs.com/docs/
 * https://github.com/RetireJS/retire.js
 * http://codeseven.github.io/toastr/demo.html
-
+* https://ghinda.net/css-toggle-switch/
 
 ### Packages
 coffeescript
@@ -40,4 +40,4 @@ natestrauser:select2
 * https://www.npmjs.com/package/gebo-libreoffice-action - Convert ODT to PDF
 * https://github.com/meteorhacks/sikka - DDOS Firewall
 * https://github.com/tommoor/tinycon - display countdown in favicon
-
+* http://chimpjs.com/
