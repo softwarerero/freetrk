@@ -42,9 +42,39 @@
 
 
 <template name="home">
-  <p>It is good to be at home.</p>
-  Hours Billable: {{stats.hoursBillable}}
-  <br/>Amount billable: {{stats.billable}}
+  <div class="stats-box2">
+    {{#each stats}}
+    <div class="panel panel-default">
+      <div class="panel-heading"><strong>{{name}}: </strong>{{formatIndustrialTime results.hoursBillable}} hs.  {{formatMoney results.billable}}</div>
+      {{#with results}}
+      {{#if projects}}
+      <div class="panel-body">
+        <table class="pure-table">
+          <thead>
+          <tr>
+            <th>Project</th>
+            <th>Hs. billable</th>
+            <th>Hs. non-billable</th>
+            <th>Amount</th>
+          </tr>
+          </thead>
+          <tbody>
+            {{#each projects}}
+            <tr>
+              <td>{{name}}</td>
+              <td>{{formatIndustrialTime hoursBillable}}</td>
+              <td>{{formatIndustrialTime hourNonBillable}}</td>
+              <td>{{formatMoney billable}}</td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+      {{/if}}
+      {{/with}}
+    </div>
+    {{/each}}
+  </div>
 </template>
 
 

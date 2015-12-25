@@ -10,6 +10,8 @@ Template.registerHelper 'formatIndustrialTime', (number) ->
 Template.registerHelper 'isUser', ->
   !!Meteor.user()
 
+Template.registerHelper 'formatMoney', (number) ->
+  '$' + number.toFixed 2
 
   
 # Toastr
