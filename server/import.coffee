@@ -1,9 +1,8 @@
 fs = Npm.require('fs')
 
-Meteor.startup ->
-#  Timetrack.remove {}
-#  Import.csv 'scryent'
-#  Import.csv 'carlypso'
+#Meteor.startup ->
+#  Import.importProject 'scryent', 'Scryent'
+#  Import.importProject 'carlypso', 'Carlypso Inc.'
 
   
 class Import
@@ -13,16 +12,18 @@ class Import
   @projectId: (name) -> (Projects.findOne {name: name})._id    
   @readCSV: (name) -> fs.readFileSync "#{@path}#{name.toLowerCase()}.csv"
 
+  @importProject: (filename, customer) =>
+    customerId = Customers.findOne({name: customer})._id    
+    ids = (p._id for p in Projects.find({customer: customerId}).fetch())
+    Timetrack.remove {projectId: {$in: ids}}
+    @csv filename
+
   @csv: (customerName, projectName) ->
     customer = @findCustomer customerName
     csv = @readCSV customerName.toLowerCase()
     lines = csv.toString().split('\n')
-#    LOGJ 'lines', lines
-#    LOGJ 'lines', lines[57]
     lines.splice(0, 2) # skip headers
-#    LOGJ 'lines', lines[0]
     lines = (line for line in lines when line && line?[0] isnt Config.csvSplitChar)
-#    LOGJ 'lines', lines
     line2Fields = (line) -> line.split Config.csvSplitChar
     line2Data = (fields) =>
       if !fields[1] then return
@@ -32,7 +33,7 @@ class Import
       from.set('hour', fromRaw[0]).set('minute', fromRaw[1])
       toRaw = fields[2].split ':'
       to.set('hour', toRaw[0]).set('minute', toRaw[1])
-      
+
       from: from.toDate()
       to: to.toDate()
       time: to.diff from, 'hours', true
