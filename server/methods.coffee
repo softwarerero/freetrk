@@ -4,39 +4,56 @@ Meteor.methods
 #    return Config.tz.server || jstz.determine().name()
 
   printTimesheet: (params) ->
-#    LOGJ 'printTimesheet', params
-    query = {}
-    if params.projects
-      query.projectId = {$in: params.projects}
-    if params.from
-      query.from = {$gte: unixTimestamp2Date params.from}
-    if params.to
-      query.to = {$lte: unixTimestamp2Date params.to}
-    query2 =
-      projectId: {$in: params.projects}
-      from: {$gte: unixTimestamp2Date params.from}
-    LOGJ 'query2', query2
+    query = queryFromParams params
     timetracks = Timetrack.find query, {sort: {from: 1}}
 #    Meteor.wrapAsync createOdt timetracks
-#    createOdt timetracks
+    createOdt timetracks, 'timesheet'
+
+  printInoice: (params) ->
+    query = queryFromParams params
+    timetracks = Timetrack.find query, {sort: {from: 1}}
+    createOdt timetracks, 'invoice'
 
   saveTimesheetTemplate: (fileObj, original) ->
     console.log 'saveTimesheetTemplate: ' + JSON.stringify original
     Settings.upsert {userId: Meteor.userId()}, {$set: {userId: Meteor.userId(), timesheet: fileObj, timeSheetName: original.name}}
+
+  saveInvoiceTemplate: (fileObj, original) ->
+    console.log 'saveInvoiceTemplate: ' + JSON.stringify original
+    Settings.upsert {userId: Meteor.userId()}, {$set: {userId: Meteor.userId(), invoice: fileObj, invoiceName: original.name}}
+
+queryFromParams = (params) ->
+  #    LOGJ 'printTimesheet', params
+  query = {}
+  if params.projects
+    query.projectId = {$in: params.projects}
+  if params.from
+    query.from = {$gte: unixTimestamp2Date params.from}
+  if params.to
+    query.to = {$lte: unixTimestamp2Date params.to}
+  ret =
+    projectId: {$in: params.projects}
+    from: {$gte: unixTimestamp2Date params.from}
+    to: {$lte: unixTimestamp2Date params.to}
+    
     
 #TODO: refactor    
-createOdt = (timetracks) ->
+createOdt = (timetracks, type) ->
   odt = Meteor.npmRequire('odt-old-archiver')
   table = Meteor.npmRequire('odt-old-archiver/lib/handler').table
   fs = Meteor.npmRequire 'fs'
 #  stream = Meteor.npmRequire 'stream'
 
-  odtFileName = Config.tmpPath + '/' + 'timesheet_' + Meteor.userId() + '-' + Date.now() + '.odt'
+#  odtFileName = Config.tmpPath + '/' + 'timesheet_' + Meteor.userId() + '-' + Date.now() + '.odt'
+  odtFileName = "#{Config.tmpPath}/#{type}_#{Meteor.userId()}-#{Date.now()}.odt"
+  LOG 'odtFileName', odtFileName
   settings = Settings.findOne {userId: Meteor.userId()}
-  fileObj = TemplateFiles.findOne {_id: settings.timesheet._id}
+  fileObj = TemplateFiles.findOne {_id: settings[type]._id}
+  LOGJ 'fileObj', fileObj
   if !fileObj
-    throw new Meteor.Error 'no-timesheet', 'You must upload a timesheet under settings first!'
+    throw new Meteor.Error "no-#{type}", "You must upload a #{type} under settings first!"
   doc = fileObj.getFileRecord().createReadStream()
+  return
   
   #TODO: create data on client
   values =

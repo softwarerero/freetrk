@@ -24,11 +24,6 @@ Template.login.events
 
 Template.home.helpers
   stats: -> [
-#    firstOfMonth = moment().subtract(1, 'weeks').startOf('month').toDate()
-#    lastOfMonth = moment().subtract(1, 'weeks').endOf('month').toDate()
-#    timetracks = Timetrack.find {$and: [from: {$gte: firstOfMonth}, to: {$lte: lastOfMonth}]}
-#    makeStats timetracks
-
     {name: 'Today', results: makeStatsPeriod 'day'}
     {name: 'This Week', results: makeStatsPeriod 'week'}
     {name: 'This Month', results: makeStatsPeriod 'month'}
@@ -36,6 +31,7 @@ Template.home.helpers
     {name: 'This Year', results: makeStatsPeriod 'year'}
     {name: 'Last Year', results: makeStatsPeriod 'year', -1}
   ]
+
 makeStatsPeriod = (period, offset) ->
   firstOfMonth = moment().startOf(period)
   lastOfMonth = moment().endOf(period)
@@ -50,6 +46,7 @@ makeStats = (timetracks) ->
   hourNonBillable = 0
   billable = 0
   projects = {}
+  fixedPrice = 0
   timetracks.forEach (tt) ->
     project = Projects.findOne {_id: tt.projectId}
     if project
@@ -61,9 +58,6 @@ makeStats = (timetracks) ->
           billable: 0
       if tt.billable
         hoursBillable += tt.time
-        #        LOGJ 'project', project
-        #        LOG 'time', tt.time
-        #        LOG 'rate', project.rate
         billable += tt.time * project.rate || 0
         projects[project.name].hoursBillable += tt.time
         projects[project.name].billable += tt.time * project.rate || 0

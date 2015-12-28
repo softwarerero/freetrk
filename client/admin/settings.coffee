@@ -10,5 +10,12 @@ Template.settings.events
     fileObj = TemplateFiles.insert event.target.files[0]
     console.log 'fileObj: ' + JSON.stringify fileObj
     Meteor.call 'saveTimesheetTemplate', fileObj, fileObj.original
-  'click .save': (event, template) ->
-    event.preventDefault()
+  'change #invoice': (event, template) ->
+    file = event.target.files[0]
+    console.log 'userId: ' + Meteor.userId()
+    file.user = Meteor.userId()
+    fileObj = TemplateFiles.insert event.target.files[0]
+    console.log 'fileObj: ' + JSON.stringify fileObj
+    Meteor.call 'saveInvoiceTemplate', fileObj, fileObj.original
+#  'click .save': (event, template) ->
+#    event.preventDefault()

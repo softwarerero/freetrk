@@ -4,6 +4,7 @@
     <tr>
       <th>Name</th>
       <th>Rate</th>
+      <th>Fixed Price</th>
       <th>Customer</th>
       <th><i class="fa fa-plus action th-action"></i></th>
     </tr>
@@ -14,6 +15,7 @@
     <tr class="" id="{{_id}}">
       <td>{{name}}</td>
       <td>{{rate}}</td>
+      <td>{{fixedPrice}}</td>
       <td>{{customerName customer}}</td>
       <td>
         <i class="fa fa-pencil-square-o action edit"></i>
@@ -44,6 +46,10 @@
           <div class="pure-u-1 pure-u-md-1-3">
             <label for="rate">Rate</label>
             <input id="rate" class="pure-u-23-24" type="number" value="{{rate}}">
+          </div>
+          <div class="pure-u-1 pure-u-md-1-3">
+            <label for="fixedPrice">Fixed Price</label>
+            <input id="fixedPrice" class="pure-u-23-24" type="number" value="{{fixedPrice}}">
           </div>
           <div class="pure-u-1 pure-u-md-1-3">
             <label for="customer">Customer</label>
