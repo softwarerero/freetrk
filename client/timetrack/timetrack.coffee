@@ -48,7 +48,7 @@ Template.timetracks.events
   'click .remove': (event, template) ->
     _id = event.currentTarget.parentNode.parentNode.getAttribute 'id'
     Timetrack.remove {_id: _id}
-  'click .odt': (event, template) ->
+  'click .printTimesheet': (event, template) ->
     event.preventDefault()
     moment(from.value, Config.dateTimeFormat)
     params =

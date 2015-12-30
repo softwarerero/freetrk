@@ -2,7 +2,6 @@
   <div class="timetracks">
     <form class="pure-form">
       <fieldset>
-        <a href="" class="pure-button odt">Odt</a>
         <label for="projectId">Project</label>
         <select id="projectId" class="pure-u-12-24" multiple>
           {{#each projects}}
@@ -10,6 +9,7 @@
           }}>{{name}}</option>
           {{/each}}
         </select>
+        <a href="" class="pure-button printTimesheet">Print Timesheet</a>
       </fieldset>
       <fieldset class="time-fields">
         <label for="from">From</label>
