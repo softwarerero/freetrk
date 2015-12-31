@@ -33,12 +33,12 @@ Template.home.helpers
   ]
 
 makeStatsPeriod = (period, offset) ->
-  firstOfMonth = moment().startOf(period)
-  lastOfMonth = moment().endOf(period)
+  firstOfPeriod = moment().startOf(period)
+  lastOfPeriod = moment().endOf(period)
   if offset
-    firstOfMonth.add offset, period
-    lastOfMonth.add offset, period
-  timetracks = Timetrack.find {$and: [from: {$gte: firstOfMonth.toDate()}, to: {$lte: lastOfMonth.toDate()}]}
+    firstOfPeriod.add offset, period
+    lastOfPeriod.add offset, period
+  timetracks = Timetrack.find {$and: [from: {$gte: firstOfPeriod.toDate()}, to: {$lte: lastOfPeriod.toDate()}]}
   makeStats timetracks
     
 makeStats = (timetracks) ->
