@@ -3,6 +3,18 @@
     <fieldset>
       <div class="pure-g">
         <div class="pure-u-1 pure-u-md-1-3">
+          <label for="currentNoPrefix">Invoice Number Prefix</label>
+          <input type="text" id="currentNoPrefix" size="40" placeholder="Prefix for invoice number" value="{{settings.currentNoPrefix}}">
+        </div>
+        <div class="pure-u-1 pure-u-md-1-3">
+          <label for="currentNo">Invoice Number</label>
+          <input type="number" id="currentNo" size="40" placeholder="Current invoice number" value="{{settings.currentNo}}">
+        </div>
+        <div class="pure-u-1 pure-u-md-1-3">
+          <label for="currentNoPostfix">Invoice Number Postfix</label>
+          <input type="text" id="currentNoPostfix" size="40" placeholder="Postfix for invoice number" value="{{settings.currentNoPostfix}}">
+        </div>
+        <div class="pure-u-1 pure-u-md-1-3">
           <div class="panel">
             <div class="heading">Timesheet Template (ott)</div>
             <div class="body">
@@ -22,6 +34,7 @@
           </div>
         </div>
       </div>
+      <button type="submit" class="pure-button pure-button-primary save">Save</button>
     </fieldset>
 
   </form>

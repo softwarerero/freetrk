@@ -1,3 +1,5 @@
+#Template.settings.onCreated ->
+  
 Template.settings.helpers
   settings: () -> Settings.findOne {userId: Meteor.userId()}
 
@@ -17,5 +19,12 @@ Template.settings.events
     fileObj = TemplateFiles.insert event.target.files[0]
     console.log 'fileObj: ' + JSON.stringify fileObj
     Meteor.call 'saveInvoiceTemplate', fileObj, fileObj.original
-#  'click .save': (event, template) ->
-#    event.preventDefault()
+  'click .save': (event, template) ->
+    event.preventDefault()
+    obj =
+      currentNoPrefix: template.find('#currentNoPrefix').value
+      currentNo: template.find('#currentNo').value
+      currentNoPostfix: template.find('#currentNoPostfix').value
+#    LOGJ 'obj', obj
+    settings = Settings.findOne {userId: Meteor.userId()}
+    Settings.update {_id: settings._id}, {$set: obj}

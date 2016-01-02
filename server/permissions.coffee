@@ -10,6 +10,8 @@ TemplateFiles.allow all
 Timetrack.allow all
 Projects.allow all
 Customers.allow all
+Settings.allow all
+Invoices.allow all
 
 
 #Meteor.methods

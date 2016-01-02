@@ -1,5 +1,5 @@
 Template.timetracks.onRendered ->
-  $('#projectId').select2()
+  $('#projects').select2()
   $('#from').datetimepicker dateTimePickerOptions
   $('#to').datetimepicker dateTimePickerOptions
   momentFrom = moment(from.value, Config.dateTimeFormat)
@@ -56,11 +56,11 @@ Template.timetracks.events
       from: FlowRouter.getQueryParam 'from'
       to: FlowRouter.getQueryParam 'to'
     Meteor.call 'printTimesheet', params, (error, data) ->
-      if data
-        window.open(data.url)
-        window.open "data:application/vnd.oasis.opendocument.text;base64, " + data
-  'change #projectId': (event, template) ->
-    projects = $(projectId).val()
+#      if data
+#        window.open(data.url)
+#        window.open "data:application/vnd.oasis.opendocument.text;base64, " + data
+  'change #projects': (event, template) ->
+    projects = $('#projects').val()
     LOGJ 'projects', projects
     FlowRouter.setQueryParams {projects: projects}
   'change #from': (event, template) ->
@@ -71,7 +71,7 @@ Template.timetracks.events
   'change #to': (event, template) ->
     to = template.find('#to').value
     if to
-      from = tdateToMoment from
+      to = tdateToMoment to
       FlowRouter.setQueryParams {to: to.format 'X'}
   'click #none': (event, template) ->
     FlowRouter.setQueryParams {from: null, to: null}
@@ -142,7 +142,7 @@ Template.timetrack.events
       from: momentFrom.toDate()
       to: momentTo.toDate()
       time: time
-      projectId: template.find('#projectId').value
+      projectId: template.find('#projects').value
       feature: template.find('#feature').value
       task: template.find('#task').value
       billable: template.find('#billable').checked

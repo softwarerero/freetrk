@@ -2,11 +2,10 @@
   <div class="timetracks">
     <form class="pure-form">
       <fieldset>
-        <label for="projectId">Project</label>
-        <select id="projectId" class="pure-u-12-24" multiple>
+        <label for="projects">Project</label>
+        <select id="projects" class="pure-u-12-24" multiple>
           {{#each projects}}
-          <option value="{{_id}}" selected={{isSelected _id
-          }}>{{name}}</option>
+          <option value="{{_id}}" selected={{isSelected _id}}>{{name}}</option>
           {{/each}}
         </select>
         <a href="" class="pure-button printTimesheet">Print Timesheet</a>
