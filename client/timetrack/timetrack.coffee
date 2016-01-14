@@ -20,7 +20,7 @@ Template.timetracks.helpers
     if to
       to = moment to, 'X'
       query.to = {$lte: to.toDate()}
-    Timetrack.find query, {sort: {from: -1}}
+    Timetrack.find query, {sort: {from: -1}, limit: Config.fetchLimit}
   projectName: (_id) ->
     project = Projects.findOne {_id: _id}
     project?.name
