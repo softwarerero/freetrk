@@ -142,7 +142,7 @@ Template.timetrack.events
       from: momentFrom.toDate()
       to: momentTo.toDate()
       time: time
-      projectId: template.find('#projects').value
+      projectId: template.find('#projectId').value
       feature: template.find('#feature').value
       task: template.find('#task').value
       billable: template.find('#billable').checked

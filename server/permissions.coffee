@@ -12,7 +12,7 @@ Projects.allow all
 Customers.allow all
 Settings.allow all
 Invoices.allow all
-
+TemplateFiles.allow all
 
 #Meteor.methods
 #  upsertTimetrack: (id, doc) -> Timetrack.upsert id, doc

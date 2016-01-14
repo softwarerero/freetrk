@@ -1,6 +1,9 @@
 Template.registerHelper 'appName', ->
   Config.appName
 
+Template.registerHelper 'formatDate', (date) ->
+  moment(date).format Config.dateFormat
+
 Template.registerHelper 'formatDateTime', (date) ->
   moment(date).format Config.dateTimeFormat
 

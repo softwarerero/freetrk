@@ -25,6 +25,10 @@ Date.prototype.dateFormat = (format) ->
   format: Config.timeFormat
   step: 15
 
+@datePickerOptions =
+  datepicker: true
+  timepicker: false
+  format: Config.dateFormat
 
 @unixTimestamp2Date = (ts) ->
   if typeof ts is 'string'

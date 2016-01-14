@@ -4,4 +4,5 @@ Meteor.publish 'all', () -> [
   Customers.find {user: this.userId}
   Settings.find {userId: this.userId}
   Invoices.find {userId: this.userId}
+#  TemplateFiles.find()
 ] 
