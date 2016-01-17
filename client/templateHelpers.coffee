@@ -32,5 +32,6 @@ Meteor.startup ->
   toastr.error(msg, title)
 
 
-@tdateToMoment = (tdate) -> moment tdate + ' +0000', Config.dateTimeFormat + ' Z'
+#@tdateToMoment = (tdate) -> moment tdate + ' +0000', Config.dateTimeFormat + ' Z'
+@tdateToMoment = (tdate) -> moment tdate, Config.dateTimeFormat + ' Z'
   

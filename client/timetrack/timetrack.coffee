@@ -61,7 +61,6 @@ Template.timetracks.events
 #        window.open "data:application/vnd.oasis.opendocument.text;base64, " + data
   'change #projects': (event, template) ->
     projects = $('#projects').val()
-    LOGJ 'projects', projects
     FlowRouter.setQueryParams {projects: projects}
   'change #from': (event, template) ->
     from = template.find('#from').value
@@ -89,27 +88,25 @@ Template.timetracks.events
     FlowRouter.setQueryParams {to: moment().endOf('year').format 'X'}
 
 Template.timetrack.onRendered ->
-  $('#from').datetimepicker dateTimePickerOptions
-  $('#to').datetimepicker dateTimePickerOptions
-  _id = FlowRouter.getParam('_id')
-  setDateAndTime _id
+  initUI = ->
+    $('#from').datetimepicker dateTimePickerOptions
+    $('#to').datetimepicker dateTimePickerOptions
+  Meteor.setTimeout initUI, 200
+#  $('#from').datetimepicker dateTimePickerOptions
+#  $('#to').datetimepicker dateTimePickerOptions
+  setDateAndTime()
   
-setDateAndTime = (_id) ->
-  if !_id then return
-  if 'new' == _id
+setDateAndTime = ->
+  _id = FlowRouter.getParam('_id')
+  if 'new' is _id
     now = new Date()
     $('#from').datetimepicker {value: now}
     $('#to').datetimepicker {value: now}
-  else
-    track = Timetrack.findOne {_id: _id}
-    if track
-      $('#from').datetimepicker {value: track.from}
-      $('#to').datetimepicker {value: track.to}
 
 Template.timetrack.helpers
   timetrack: () ->
+    setDateAndTime()
     _id = FlowRouter.getParam('_id')
-    setDateAndTime _id
     if 'new' == _id
       track =
         billable: 'checked'
@@ -164,16 +161,17 @@ Template.timetrack.events
         Timetrack.update {_id: _id}, {$set: timetrack}
         FlowRouter.go '/timetrack'
       else
-        Timetrack.insert timetrack        
-        FlowRouter.go '/timetrack/new'
+        id = Timetrack.insert timetrack        
+        FlowRouter.go "/timetrack/#{id}"
 #        TODO: clear fields
-        template.find('#feature').value = ''
-        template.find('#task').value = ''
+#        template.find('#feature').value = ''
+#        template.find('#task').value = ''
       SUCCESS 'You worked!'
     catch error
       ERROR error
 
 dateChanged = (template) ->
+  console.log 'dateChanged'
   from = template.find('#from').value
   to = template.find('#to').value
   if from && to
@@ -186,6 +184,7 @@ dateChanged = (template) ->
     time.value = newTime
 
 timeChanged = (template) ->
+  console.log 'time changed'
   time = template.find('#time').value
   unless time then return
   from = template.find('#from').value
