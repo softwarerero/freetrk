@@ -3,10 +3,6 @@ Template.timetracks.onRendered ->
   $('#from').datetimepicker dateTimePickerOptions
   $('#to').datetimepicker dateTimePickerOptions
   momentFrom = moment(from.value, Config.dateTimeFormat)
-#  LOG 'b', momentFrom.format()
-#  FlowRouter.setQueryParams {from: momentFrom.format 'X'}
-#  momentTo = moment(to.value, Config.dateTimeFormat)
-#  FlowRouter.setQueryParams {to: momentTo.format 'X'}
 
 Template.timetracks.helpers
   timetracks: () ->
@@ -154,24 +150,17 @@ Template.timetrack.events
         task: Match.Optional(String)
         billable: Boolean
         userId: String
-#    console.log 'timetrack: ' + JSON.stringify timetrack
-#      Timetrack.upsert {_id: _id}, timetrack
-#      Meteor.call 'upsertTimetrack', _id, timetrack
       if _id
         Timetrack.update {_id: _id}, {$set: timetrack}
         FlowRouter.go '/timetrack'
       else
         id = Timetrack.insert timetrack        
         FlowRouter.go "/timetrack/#{id}"
-#        TODO: clear fields
-#        template.find('#feature').value = ''
-#        template.find('#task').value = ''
       SUCCESS 'You worked!'
     catch error
       ERROR error
 
 dateChanged = (template) ->
-  console.log 'dateChanged'
   from = template.find('#from').value
   to = template.find('#to').value
   if from && to
@@ -184,7 +173,6 @@ dateChanged = (template) ->
     time.value = newTime
 
 timeChanged = (template) ->
-  console.log 'time changed'
   time = template.find('#time').value
   unless time then return
   from = template.find('#from').value
@@ -199,14 +187,3 @@ timeChanged = (template) ->
     fromValue = to.subtract time * 60, 'minutes'
     fromValue = fromValue.format Config.dateTimeFormat
     template.find('#from').value = fromValue
-
-  
-#  'click .fa-plus': (event, template) ->
-#    FlowRouter.go '/admin/project'
-#  'click .edit': (event, template) ->
-#    _id = event.currentTarget.parentNode.parentNode.getAttribute 'id'
-#    FlowRouter.go "/admin/project/#{_id}"
-#  'click .remove': (event, template) ->
-#    _id = event.currentTarget.parentNode.parentNode.getAttribute 'id'
-#    Projects.remove {_id: _id}
-
