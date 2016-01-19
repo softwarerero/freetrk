@@ -14,8 +14,8 @@
     {{#each projects}}
     <tr class="" id="{{_id}}">
       <td>{{name}}</td>
-      <td>{{rate}}</td>
-      <td>{{fixedPrice}}</td>
+      <td>{{formatMoney rate}}</td>
+      <td>{{formatMoney fixedPrice}}</td>
       <td>{{customerName customer}}</td>
       <td>
         <i class="fa fa-pencil-square-o action edit"></i>
