@@ -55,6 +55,14 @@ Template.timetracks.events
 #      if data
 #        window.open(data.url)
 #        window.open "data:application/vnd.oasis.opendocument.text;base64, " + data
+  'click .exportCSV': (event, template) ->
+    event.preventDefault()
+    moment(from.value, Config.dateTimeFormat)
+    params =
+      projects: FlowRouter.getQueryParam 'projects'
+      from: FlowRouter.getQueryParam 'from'
+      to: FlowRouter.getQueryParam 'to'
+    Meteor.call 'exportCSV', params, (error, data) ->
   'change #projects': (event, template) ->
     projects = $('#projects').val()
     FlowRouter.setQueryParams {projects: projects}

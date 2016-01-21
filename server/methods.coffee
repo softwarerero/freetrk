@@ -9,8 +9,9 @@ Meteor.methods
     LOGJ 'timetracks', timetracks.length
 #    Meteor.wrapAsync createOdt timetracks
     data = {}
-    positions = positions params.projects, timetracks
-    createOdt data, mongo2Table(timetracks), positions, 'timesheet'
+    projects = params?.projects || []
+    pos = positions(projects, timetracks)
+    createOdt data, mongo2Table(timetracks), pos, 'timesheet'
 
   printInvoice: (invoiceId, params) ->
     query = queryFromParams params
@@ -33,6 +34,17 @@ Meteor.methods
   saveInvoiceTemplate: (fileObj, original) ->
     Settings.upsert {userId: Meteor.userId()}, {$set: {userId: Meteor.userId(), invoice: fileObj, invoiceName: original.name}}
 
+  exportCSV: (params) ->
+    LOGJ 'params', params
+    query = queryFromParams params
+    query.billable = true
+    LOGJ 'query', query
+    timetracks = Timetrack.find(query, {sort: {from: -1}}).fetch()
+    exportCSV timetracks
+
+
+fs = Meteor.npmRequire 'fs'
+    
 customerData = (customer) ->
   customerAddress = (i) ->
     lines = customer.address.split('\n')
@@ -99,25 +111,24 @@ invoiceData = (timetracks, customer) ->
 #    "value": "999999999"
     
 queryFromParams = (params) ->
-#  query = {}
-#  if params.projects
-#    query.projectId = {$in: params.projects}
-#  if params.from
-#    query.from = {$gte: unixTimestamp2Date params.from}
-#  if params.to
-#    query.to = {$lte: unixTimestamp2Date params.to}
-  ret =
-    projectId: {$in: params.projects}
-#    from: {$gte: unixTimestamp2Date params.from}
-#    to: {$lte: unixTimestamp2Date params.to}
-    from: {$gte: params.from}
-    to: {$lte: params.to}
-    
+  query = {}
+  if params.projects
+    query.projectId = {$in: params.projects}
+  if params.from
+    query.from = {$gte: unixTimestamp2Date params.from}
+  if params.to
+    query.to = {$lte: unixTimestamp2Date params.to}
+  return query    
+#  ret =
+#    projectId: {$in: params.projects}
+##    from: {$gte: unixTimestamp2Date params.from}
+##    to: {$lte: unixTimestamp2Date params.to}
+#    from: {$gte: params.from}
+#    to: {$lte: params.to}
     
 createOdt = (data, timetable, positions, type) ->
   odt = Meteor.npmRequire('odt-old-archiver')
   table = Meteor.npmRequire('odt-old-archiver/lib/handler').table
-  fs = Meteor.npmRequire 'fs'
 #  stream = Meteor.npmRequire 'stream'
 
   odtFileName = "#{Config.tmpPath}/#{type}_#{Meteor.userId()}-#{Date.now()}.odt"
@@ -179,3 +190,18 @@ mongo2Table = (timetracks) ->
   {Timetable: rows}
 
 stringField = (value) -> {type: 'string', value: value?.toString()}
+
+exportCSV = (timetracks) ->
+  date = formatDate Date.now()
+  outFileName = "#{Config.tmpPath}/timesheet_#{Meteor.userId()}-#{date}.csv"
+  out = fs.createWriteStream(outFileName)
+  writeAttr = (attr) -> out.write attr + ';'
+  for tt in timetracks
+    project = Projects.findOne {_id: tt.projectId}
+    writeAttr project.name
+    writeAttr formatDateTime tt.from
+    writeAttr formatDateTime tt.to
+    writeAttr formatIndustrialTime tt.time
+    out.write tt.feature
+    out.write '\n'
+  out.end() 

@@ -34,5 +34,9 @@ Date.prototype.dateFormat = (format) ->
   if typeof ts is 'string'
     ts = parseInt ts
   new Date parseInt ts*1000
-  
+
+
+@formatDate = (date) -> moment(date).format Config.dateFormat
+@formatDateTime = (date) -> moment(date).format Config.dateTimeFormat
+@formatIndustrialTime = (number) -> number.toFixed 2
   
