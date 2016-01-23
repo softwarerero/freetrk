@@ -35,10 +35,10 @@ Meteor.methods
     Settings.upsert {userId: Meteor.userId()}, {$set: {userId: Meteor.userId(), invoice: fileObj, invoiceName: original.name}}
 
   exportCSV: (params) ->
-    LOGJ 'params', params
+#    LOGJ 'params', params
     query = queryFromParams params
-    query.billable = true
-    LOGJ 'query', query
+#    query.billable = true
+#    LOGJ 'query', query
     timetracks = Timetrack.find(query, {sort: {from: -1}}).fetch()
     exportCSV timetracks
 
@@ -195,13 +195,15 @@ exportCSV = (timetracks) ->
   date = formatDate Date.now()
   outFileName = "#{Config.tmpPath}/timesheet_#{Meteor.userId()}-#{date}.csv"
   out = fs.createWriteStream(outFileName)
-  writeAttr = (attr) -> out.write attr + ';'
+  writeAttr = (attr) -> out.write '"' + attr + '"'
+  writeAttrDelim = (attr) -> writeAttr attr; out.write ','
   for tt in timetracks
     project = Projects.findOne {_id: tt.projectId}
-    writeAttr project.name
-    writeAttr formatDateTime tt.from
-    writeAttr formatDateTime tt.to
-    writeAttr formatIndustrialTime tt.time
-    out.write tt.feature
+    writeAttrDelim project.name
+    writeAttrDelim formatDateTime tt.from
+    writeAttrDelim formatDateTime tt.to
+    writeAttrDelim formatIndustrialTime tt.time
+    writeAttrDelim tt.feature
+    writeAttr tt.billable
     out.write '\n'
   out.end() 
