@@ -41,3 +41,4 @@ natestrauser:select2
 * https://github.com/meteorhacks/sikka - DDOS Firewall
 * https://github.com/tommoor/tinycon - display countdown in favicon
 * http://chimpjs.com/
+* http://lab.ejci.net/favico.js/ - Animated Favion

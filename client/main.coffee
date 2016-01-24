@@ -22,7 +22,7 @@ Template.login.events
       FlowRouter.go '/'
 
 
-Template.home.helpers
+Template.main.helpers
   stats: -> [
     {name: 'Today', results: makeStatsPeriod 'day'}
     {name: 'This Week', results: makeStatsPeriod 'week'}
@@ -31,7 +31,8 @@ Template.home.helpers
     {name: 'This Year', results: makeStatsPeriod 'year'}
     {name: 'Last Year', results: makeStatsPeriod 'year', -1}
   ]
-
+      
+    
 makeStatsPeriod = (period, offset) ->
   firstOfPeriod = moment().startOf(period)
   lastOfPeriod = moment().endOf(period)
@@ -64,7 +65,6 @@ makeStats = (timetracks) ->
       else
         hourNonBillable += tt.time
         projects[project.name].hourNonBillable += tt.time
-  #    LOGJ 'projects', projects
   stats =
     hoursBillable: hoursBillable
     billable: billable

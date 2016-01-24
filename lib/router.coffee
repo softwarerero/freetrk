@@ -1,15 +1,6 @@
-FlowRouter.route '/blog/:postId', 
-  action: (params, queryParams) ->
-    console.log("Yeah! We are on the post:", params.postId)
-
-
-
 FlowRouter.route '/',
-  action: () -> BlazeLayout.render "mainLayout", {content: "home"}
-
-#FlowRouter.route '/:postId', 
-#  action: () -> BlazeLayout.render "mainLayout", {content: "blogPost"}
-
+  action: () -> BlazeLayout.render "mainLayout", {content: "main"}
+    
 
 timetrackSection = FlowRouter.group
   prefix: "/timetrack"
@@ -18,7 +9,14 @@ timetrackSection.route '/',
   action: () -> BlazeLayout.render "mainLayout", {content: "timetracks"}
 
 timetrackSection.route '/:_id',
-  action: () -> BlazeLayout.render "mainLayout", {content: "timetrack"}
+  triggersEnter: [ (context, redirect) ->
+    if context.params._id is 'work'
+      id = Work.startStop()
+      if id
+        redirect "/timetrack/#{id}"
+  ]
+  action: (params) ->
+    BlazeLayout.render "mainLayout", {content: "timetrack"}
 
 
 invoiceSection = FlowRouter.group
@@ -29,8 +27,8 @@ invoiceSection.route '/',
 
 invoiceSection.route '/:_id',
   action: () -> BlazeLayout.render "mainLayout", {content: "invoice"}    
-    
-    
+
+
 adminSection = FlowRouter.group
   prefix: "/admin"
 
@@ -60,4 +58,3 @@ superAdminSection = adminSection.group
 
 superAdminSection.route '/access-control',
   action: () ->
-    

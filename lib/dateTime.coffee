@@ -38,5 +38,15 @@ Date.prototype.dateFormat = (format) ->
 
 @formatDate = (date) -> moment(date).format Config.dateFormat
 @formatDateTime = (date) -> moment(date).format Config.dateTimeFormat
+@formatTime = (date) -> moment(date).format Config.timeFormat
 @formatIndustrialTime = (number) -> number.toFixed 2
+@formatDisplayTime = (number) ->
+  minutes = Math.floor(number / 60)
+  if minutes < 10
+    minutes = '0' + minutes
+  seconds = number % 60
+  if seconds < 10
+    seconds = '0' + seconds
+  "#{minutes}:#{seconds}"
+  
   

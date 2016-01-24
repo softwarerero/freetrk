@@ -19,7 +19,7 @@
       </fieldset>
       <div class="switch-toggle switch-candy switch-light switch-holo2">
         <input id="none" name="view" type="radio" checked>
-        <label for="none" onclick="">None</label>
+        <label for="none" onclick="">All</label>
         <input id="month" name="view" type="radio">
         <label for="month" onclick="">Month</label>
         <input id="week" name="view" type="radio">
@@ -84,7 +84,7 @@
 
         <div class="pure-u-1 pure-u-md-1-4">
           <label for="time">Time</label>
-          <input id="time" type="number" class="pure-u-23-24" required value="{{time}}">
+          <input id="time" type="number" class="pure-u-23-24" required value="{{formatIndustrialTime time}}">
         </div>
 
         <div class="pure-u-1 pure-u-md-1-4">

@@ -99,7 +99,7 @@ Template.timetrack.onRendered ->
 #  $('#from').datetimepicker dateTimePickerOptions
 #  $('#to').datetimepicker dateTimePickerOptions
   setDateAndTime()
-  
+
 setDateAndTime = ->
   _id = FlowRouter.getParam('_id')
   if 'new' is _id
@@ -111,7 +111,7 @@ Template.timetrack.helpers
   timetrack: () ->
     setDateAndTime()
     _id = FlowRouter.getParam('_id')
-    if 'new' == _id
+    if 'new' is _id
       track =
         billable: 'checked'
         project: Session.get 'lastProject'
