@@ -12,15 +12,18 @@ class @Work
     seconds = to.diff from, 'seconds'
     @work.innerHTML = formatDisplayTime seconds
   @startStop: () -> if @id then @stop() else @start()
-  @start = ->
+  @init = ->
     unless @work then @work = document.getElementById 'work'
     unless @favicon
       @favicon = new Favico {animation: 'none', type: 'rectangle', bgColor: '#fff', textColor: '#ffa600'}
+  @start = ->
+    @init()
     @id = Timetrack.insert
       from: new Date()
+      to: new Date()
       userId: Meteor.userId()
       billable: true
-    @intervalId = setInterval @tick, 60000
+    @intervalId = setInterval @tick, 1000
     @favicon.badge '0'
     @work.innerHTML = formatDisplayTime 0
     @id
@@ -31,7 +34,7 @@ class @Work
     time = to.diff(from, 'hours', true)
     Timetrack.update {_id: @id}, {$set: {to: to.toDate(), time: time}}
     clearInterval @intervalId
-    FlowRouter.go "/timetrack/#{@id}"
+#    FlowRouter.go "/timetrack/#{@id}"
     ret = @id
     @id = null
     @favicon.badge ''
