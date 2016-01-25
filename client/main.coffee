@@ -25,7 +25,7 @@ Template.login.events
 Template.main.helpers
   stats: -> [
     {name: 'Today', results: makeStatsPeriod 'day'}
-    {name: 'This Week', results: makeStatsPeriod 'week'}
+    {name: 'This Week', results: makeStatsPeriod Config.i18n.week}
     {name: 'This Month', results: makeStatsPeriod 'month'}
     {name: 'Last Month', results: makeStatsPeriod 'month', -1}
     {name: 'This Year', results: makeStatsPeriod 'year'}

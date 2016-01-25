@@ -29,12 +29,12 @@ class @Work
     @id
   @stop = ->
     timetrack = Timetrack.findOne {_id: @id}
-    from = moment(timetrack.from)
-    to = moment(new Date())
-    time = to.diff(from, 'hours', true)
-    Timetrack.update {_id: @id}, {$set: {to: to.toDate(), time: time}}
+    if timetrack
+      from = moment(timetrack.from)
+      to = moment(new Date())
+      time = to.diff(from, 'hours', true)
+      Timetrack.update {_id: @id}, {$set: {to: to.toDate(), time: time}}
     clearInterval @intervalId
-#    FlowRouter.go "/timetrack/#{@id}"
     ret = @id
     @id = null
     @favicon.badge ''
