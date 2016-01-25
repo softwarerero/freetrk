@@ -30,33 +30,16 @@ Template.invoice.helpers
     _id = FlowRouter.getParam('_id')
     if !_id || 'new' is _id then return {}
     invoice = Invoices.findOne {_id: _id}
-    LOGJ 'invoice', invoice
     if invoice?.customer
-      LOG 'customer', invoice.customer
       Meteor.setTimeout (-> $('#customer').val(invoice.customer).trigger('change')), 300
     invoice
   customers: -> Customers.find()
   projects: () -> Projects.find({}, {sort: {name: 1}})
-#  firstOfMonth: ->
-#    from = FlowRouter.getQueryParam 'from'
-#    if from
-#      from = moment from, 'X'
-#    else
-#      from = moment().startOf('month')
-#    from.format(Config.dateTimeFormat)      
-#  lastOfMonth: ->
-#    to = FlowRouter.getQueryParam 'to'
-#    if to
-#      to = moment to, 'X'
-#    else
-#      to = moment().endOf('month')
-#    to.format(Config.dateTimeFormat)
   invoiceNo: ->
     settings = Settings.findOne {userId: Meteor.userId()}
     if settings
       currentNo = parseInt (settings.currentNo || 0)
       settings.currentNoPrefix + ++currentNo + settings.currentNoPostfix
-#  date: -> moment().format Config.dateFormat
     
 Template.invoice.events
   'change #customer': (event, template) ->
@@ -93,13 +76,6 @@ Template.invoice.events
       from: momentFrom.toDate()
       to: momentTo.toDate()
       date: template.find('#date').value
-    LOGJ 'params', params
-#    check obj.name, NonEmptyString
-#    Invoices.go '/invoice'
-#    params =
-#      projects: FlowRouter.getQueryParam 'projects'
-#      from: FlowRouter.getQueryParam 'from'
-#      to: FlowRouter.getQueryParam 'to'
     Meteor.call 'printInvoice', _id, params, (error, data) ->
       LOG 'error', error
       LOG 'data', data
@@ -116,8 +92,6 @@ Template.invoice.events
       invoiceNo: template.find('#invoiceNo').value
       customer: FlowRouter.getQueryParam 'customer'
       projects: FlowRouter.getQueryParam 'projects'
-#      from: FlowRouter.getQueryParam 'from'
-#      to: FlowRouter.getQueryParam 'to'
       from: momentFrom.toDate()
       to: momentTo.toDate()
       date: dateValue.toDate()
@@ -128,5 +102,3 @@ Template.invoice.events
   'click .invoices': (event, template) ->
     event.preventDefault()
     Invoices.go '/invoice'
-
-
