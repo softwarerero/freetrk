@@ -2,20 +2,15 @@ fs = Npm.require('fs')
 
 Meteor.startup ->
 
-#  console.log 'remove: ' + TemplateFiles.remove {}
-#  console.log 'remove: ' + Timetrack.remove {}
-
-
   #Meteor.users.remove {}
   if !Meteor.users.find().count()
-    for u in Config.users
+    for u in BootstrapUsers
       user =
         username: u.name
         emails: [
           { address: u.email, verified: true }
         ]
         createdAt: new Date()
-  
       Meteor.users.insert user, (error, id) ->
         Accounts.setPassword id, u.password
   

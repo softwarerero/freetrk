@@ -6,3 +6,4 @@ lib/config.coffee
 *.log
 ideas.txt
 dbbackup
+server/bootstrap
