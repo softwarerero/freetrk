@@ -1,6 +1,6 @@
 Track hours spend on projects
 
-![Screenshot01](https://raw.github.com/softwarerero/freetrck/master/public/img/screenshot_timetrack01.png)
+![Screenshot01](public/img/screenshot_timetrack01.png)
 
 ## Features 
 * track hours (with timer)
