@@ -1,5 +1,12 @@
 Track hours spend on projects
 
+![Screenshot01](https://raw.github.com/softwarerero/freetrck/master/public/img/screenshot_timetrack01.png)
+
+## Features 
+* track hours (with timer)
+* print timesheet and invoices based on (OpenDocument text templates - OTT)
+* export csv
+
 ### Doc
 * http://docs.meteor.com/#/full
 * http://fortawesome.github.io/Font-Awesome/icons/
@@ -36,7 +43,7 @@ natestrauser:select2
 ### Hints
 * For odt table.js has to be replaced with https://github.com/domachine/node-odt/blob/master/lib/handler/table.js
 
-### Ideas
+### Backlog
 * https://www.npmjs.com/package/gebo-libreoffice-action - Convert ODT to PDF
 * https://github.com/meteorhacks/sikka - DDOS Firewall
 * https://github.com/tommoor/tinycon - display countdown in favicon
