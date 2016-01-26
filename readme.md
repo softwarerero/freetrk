@@ -44,8 +44,9 @@ natestrauser:select2
 * For odt table.js has to be replaced with https://github.com/domachine/node-odt/blob/master/lib/handler/table.js
 
 ### Backlog
+* More user configuration
+* i18n
+* Multi currency
 * https://www.npmjs.com/package/gebo-libreoffice-action - Convert ODT to PDF
 * https://github.com/meteorhacks/sikka - DDOS Firewall
-* https://github.com/tommoor/tinycon - display countdown in favicon
 * http://chimpjs.com/
-* http://lab.ejci.net/favico.js/ - Animated Favion
