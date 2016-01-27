@@ -42,7 +42,8 @@ Template.timetracks.events
     _id = event.currentTarget.parentNode.parentNode.getAttribute 'id'
     FlowRouter.go "/timetrack/#{_id}"
   'click .remove': (event, template) ->
-    _id = event.currentTarget.parentNode.parentNode.getAttribute 'id'
+    if confirm "Are you sure?"
+      _id = event.currentTarget.parentNode.parentNode.getAttribute 'id'
     Timetrack.remove {_id: _id}
   'click .printTimesheet': (event, template) ->
     event.preventDefault()
