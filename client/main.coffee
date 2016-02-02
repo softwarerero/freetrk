@@ -38,7 +38,7 @@ makeStatsPeriod = (period, offset) ->
   lastOfPeriod = moment().endOf(period)
   if offset
     firstOfPeriod.add offset, period
-    lastOfPeriod.add offset, period
+    lastOfPeriod = firstOfPeriod.clone().endOf(period)
   timetracks = Timetrack.find {$and: [from: {$gte: firstOfPeriod.toDate()}, to: {$lte: lastOfPeriod.toDate()}]}
   makeStats timetracks
     

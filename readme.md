@@ -20,6 +20,7 @@ Track hours spend on projects
 * https://github.com/RetireJS/retire.js
 * http://codeseven.github.io/toastr/demo.html
 * https://ghinda.net/css-toggle-switch/
+* https://github.com/chinchang/hint.css
 
 ### Packages
 coffeescript
@@ -50,3 +51,6 @@ natestrauser:select2
 * https://www.npmjs.com/package/gebo-libreoffice-action - Convert ODT to PDF
 * https://github.com/meteorhacks/sikka - DDOS Firewall
 * http://chimpjs.com/
+
+### Ideas
+https://github.com/ericclemmons/npm-install-webpack-plugin

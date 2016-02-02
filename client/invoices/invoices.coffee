@@ -77,7 +77,7 @@ Template.invoice.events
       to: momentTo.toDate()
       date: template.find('#date').value
     Meteor.call 'printInvoice', _id, params, (error, data) ->
-      LOG 'error', error
+      if error then return ERROR error
       LOG 'data', data
 #      if data
 #        window.open(data.url)
