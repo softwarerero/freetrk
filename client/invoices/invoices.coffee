@@ -66,19 +66,20 @@ Template.invoice.events
   'click .printInvoice': (event, template) ->
     event.preventDefault()
     _id = template.find('#_id').value || null
-    momentFrom = moment(from.value, Config.dateTimeFormat)
+    momentFrom = moment.utc(from.value, Config.dateTimeFormat)
     momentTo = moment(to.value, Config.dateTimeFormat)
+    LOG 'from', from.value
+    LOG 'momentFrom', momentFrom.utc().format()
     params =
       userId: Meteor.userId()
       invoiceNo: template.find('#invoiceNo').value
       customer: FlowRouter.getQueryParam 'customer'
       projects: FlowRouter.getQueryParam 'projects'
-      from: momentFrom.toDate()
-      to: momentTo.toDate()
+      from: momentFrom.unix()
+      to: momentTo.unix()
       date: template.find('#date').value
     Meteor.call 'printInvoice', _id, params, (error, data) ->
       if error then return ERROR error
-      LOG 'data', data
 #      if data
 #        window.open(data.url)
 #        window.open "data:application/vnd.oasis.opendocument.text;base64, " + data
@@ -101,4 +102,4 @@ Template.invoice.events
       Invoices.insert params
   'click .invoices': (event, template) ->
     event.preventDefault()
-    Invoices.go '/invoice'
+    FlowRouter.go '/invoice'

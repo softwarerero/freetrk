@@ -1,6 +1,7 @@
 Meteor.methods
 
   printTimesheet: (params) ->
+    LOGJ 'params', params
     query = queryFromParams params
     timetracks = Timetrack.find query, {sort: {from: 1}}
     timetracks = timetracks.fetch()
@@ -64,8 +65,8 @@ customerData = (customer) ->
     
 invoiceHeader = (invoiceId) ->
   invoice = Invoices.findOne {_id: invoiceId}
-  invoice_period = "#{invoice.from} - #{invoice.to}"
-  invoice_date: { "type": "string", "value": invoice.date }
+  invoice_period = "#{formatDate invoice.from} - #{formatDate invoice.to}"
+  invoice_date: { "type": "string", "value": formatDate invoice.date }
   invoice_no: { "type": "string", "value": invoice.invoiceNo }
   invoice_period: { "type": "string", "value": invoice_period }
 
@@ -77,10 +78,11 @@ positions = (projectIds, timetracks) ->
     pos_quantity = 0
     for t in timetracks
       if t.projectId is projectId
-        pos_quantity += t.time
+        if t.billable
+          pos_quantity += t.time
     pos.pos_quantity = stringField pos_quantity.toFixed(2)
     pos.pos_text = stringField project.name
-    pos.pos_price = stringField project.rate
+    pos.pos_price = stringField project.rate.toFixed(2)
     pos_sum = pos_quantity * project.rate
     pos.pos_sum = stringField pos_sum.toFixed(2)
     rows.push pos
@@ -94,19 +96,18 @@ invoiceData = (timetracks, customer) ->
     project = Projects.findOne {_id: t.projectId}
     if t.billable
       hours_billable += t.time
-      net_sum += t.time * project.rate || 0
+      net_sum += t.time * (project.rate || 0)
     else
       hours_non_billable += t.time
   vat = 0
   total = net_sum
   if customer
-    vat = net_sum / 100 * customer.vat
+    vat = net_sum / 100 * (customer.vat || 0)
     total += vat
   net_sum: { "type": "string", "value": net_sum.toFixed(2) }
   vat: { "type": "string", "value": vat.toFixed(2) }
   total: { "type": "string", "value": total.toFixed(2) }
-#  payable: { "type": "string", "value": "Payable within 15 days via Western Union, Bank Transfer or Paypal." }
-#  "customer": { "type": "string", "value": "A Customer\n\nwhat happen's with many\nlines?" }
+  payable: { "type": "string", "value": customer.payable || ''}
   hours_billable: { "type": "string", "value": hours_billable.toFixed(2) }
   hours_non_billable: { "type": "string", "value": hours_non_billable.toFixed(2) }
     

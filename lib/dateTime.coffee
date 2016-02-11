@@ -35,7 +35,6 @@ Date.prototype.dateFormat = (format) ->
     ts = parseInt ts
   new Date parseInt ts*1000
 
-
 @formatDate = (date) -> moment(date).format Config.dateFormat
 @formatDateTime = (date) -> moment(date).format Config.dateTimeFormat
 @formatTime = (date) -> moment(date).format Config.timeFormat

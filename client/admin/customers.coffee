@@ -29,6 +29,7 @@ Template.customer.events
         no: template.find('#no').value
         vat: template.find('#vat').value
         address: template.find('#address').value
+        payable: template.find('#payable').value
       check obj.name, NonEmptyString
       if _id
         Customers.update {_id: _id}, {$set: obj}
