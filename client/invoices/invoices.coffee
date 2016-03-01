@@ -38,8 +38,8 @@ Template.invoice.helpers
   invoiceNo: ->
     settings = Settings.findOne {userId: Meteor.userId()}
     if settings
-      currentNo = parseInt (settings.currentNo || 0)
-      settings.currentNoPrefix + ++currentNo + settings.currentNoPostfix
+      invoiceNo = parseInt (settings.invoiceNo || 0)
+      settings.invoiceNoPrefix + ++invoiceNo + settings.invoiceNoPostfix
     
 Template.invoice.events
   'change #customer': (event, template) ->
@@ -99,7 +99,12 @@ Template.invoice.events
     if _id
       Invoices.update {_id: _id}, {$set: params}
     else
-      Invoices.insert params
+      _id = Invoices.insert params
+      template.find('#_id').value = _id
+    invoiceNo = template.find('#invoiceNo').value
+    LOG 'invoiceNo', invoiceNo
+    settings = Settings.findOne {userId: Meteor.userId()}
+    Settings.update {_id: settings._id}, {$set: {invoiceNo: invoiceNo}}
   'click .invoices': (event, template) ->
     event.preventDefault()
     FlowRouter.go '/invoice'

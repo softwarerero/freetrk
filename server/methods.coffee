@@ -65,6 +65,7 @@ customerData = (customer) ->
     
 invoiceHeader = (invoiceId) ->
   invoice = Invoices.findOne {_id: invoiceId}
+  LOGJ 'invoice', invoice
   invoice_period = "#{formatDate invoice.from} - #{formatDate invoice.to}"
   invoice_date: { "type": "string", "value": formatDate invoice.date }
   invoice_no: { "type": "string", "value": invoice.invoiceNo }
@@ -107,7 +108,7 @@ invoiceData = (timetracks, customer) ->
   net_sum: { "type": "string", "value": net_sum.toFixed(2) }
   vat: { "type": "string", "value": vat.toFixed(2) }
   total: { "type": "string", "value": total.toFixed(2) }
-  payable: { "type": "string", "value": customer.payable || ''}
+  payable: { "type": "string", "value": customer?.payable || ''}
   hours_billable: { "type": "string", "value": hours_billable.toFixed(2) }
   hours_non_billable: { "type": "string", "value": hours_non_billable.toFixed(2) }
     
