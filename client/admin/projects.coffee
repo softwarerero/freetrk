@@ -40,8 +40,8 @@ Template.project.events
     obj =
       user: Meteor.userId()
       name: template.find('#name').value
-      rate: parseInt template.find('#rate').value
-      fixedPrice: parseInt template.find('#fixedPrice').value
+      rate: parseFloat template.find('#rate').value
+      fixedPrice: parseFloat template.find('#fixedPrice').value
       customer: template.find('#customer').value
     check obj.name, NonEmptyString
     if _id
