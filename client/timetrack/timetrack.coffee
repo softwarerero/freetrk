@@ -4,19 +4,27 @@ Template.timetracks.onRendered ->
   $('#to').datetimepicker dateTimePickerOptions
   momentFrom = moment(from.value, Config.dateTimeFormat)
 
+getTimetrackQuery = ->
+  projects = FlowRouter.getQueryParam 'projects'
+  query = if projects then {projectId: {$in: projects}} else {}
+  from = FlowRouter.getQueryParam 'from'
+  if from
+    from = moment from, 'X'
+    query.from = {$gte: from.toDate()}
+  to = FlowRouter.getQueryParam 'to'
+  if to
+    to = moment to, 'X'
+    query.to = {$lte: to.toDate()}
+  query
+  
 Template.timetracks.helpers
   timetracks: () ->
-    projects = FlowRouter.getQueryParam 'projects'
-    query = if projects then {projectId: {$in: projects}} else {}
-    from = FlowRouter.getQueryParam 'from'
-    if from
-      from = moment from, 'X'
-      query.from = {$gte: from.toDate()}
-    to = FlowRouter.getQueryParam 'to'
-    if to
-      to = moment to, 'X'
-      query.to = {$lte: to.toDate()}
-    Timetrack.find query, {sort: {from: -1}, limit: Config.fetchLimit}
+    Timetrack.find getTimetrackQuery(), {sort: {from: -1}, limit: Config.fetchLimit}
+  sum: () ->
+    timetracks = Timetrack.find getTimetrackQuery(), {limit: Config.fetchLimit}
+    sum = _.reduce timetracks.fetch(), ((memo, tt) -> memo + tt.time), 0
+    sum = Math.round(sum * 100) / 100
+    if sum then "(#{sum})"
   projectName: (_id) ->
     project = Projects.findOne {_id: _id}
     project?.name

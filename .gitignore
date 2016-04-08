@@ -7,3 +7,4 @@ lib/config.coffee
 ideas.txt
 dbbackup
 server/bootstrap
+tmp/
