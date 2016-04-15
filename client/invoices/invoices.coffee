@@ -1,5 +1,6 @@
 Template.invoices.helpers
   invoices: () -> Invoices.find({}, {sort: {date: 1}})
+  customerName: (customer) -> Customers.findOne({_id: customer})?.name
 
 Template.invoices.events
   'click .fa-plus': (event, template) ->
