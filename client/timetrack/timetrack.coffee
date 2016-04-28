@@ -21,7 +21,7 @@ Template.timetracks.helpers
   timetracks: () ->
     Timetrack.find getTimetrackQuery(), {sort: {from: -1}, limit: Config.fetchLimit}
   sum: () ->
-    timetracks = Timetrack.find getTimetrackQuery(), {limit: Config.fetchLimit}
+    timetracks = Timetrack.find getTimetrackQuery(), {sort: {from: -1}, limit: Config.fetchLimit}
     sum = _.reduce timetracks.fetch(), ((memo, tt) -> memo + tt.time), 0
     sum = Math.round(sum * 100) / 100
     if sum then "(#{sum})"
@@ -90,6 +90,9 @@ Template.timetracks.events
   'click #month': (event, template) ->
     FlowRouter.setQueryParams {from: moment().startOf('month').format 'X'}
     FlowRouter.setQueryParams {to: moment().endOf('month').format 'X'}
+  'click #last-month': (event, template) ->
+    FlowRouter.setQueryParams {from: moment().subtract(1,'months').startOf('month').format 'X'}
+    FlowRouter.setQueryParams {to: moment().subtract(1,'months').endOf('month').format 'X'}    
   'click #week': (event, template) ->
     FlowRouter.setQueryParams {from: moment().startOf('week').format 'X'}
     FlowRouter.setQueryParams {to: moment().endOf('week').format 'X'}
