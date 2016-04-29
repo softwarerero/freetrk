@@ -37,6 +37,10 @@ Template.invoice.helpers
   customers: -> Customers.find()
   projects: () -> Projects.find({}, {sort: {name: 1}})
   invoiceNo: ->
+    _id = FlowRouter.getParam('_id')
+    if _id? isnt 'new'
+      invoice = Invoices.findOne {_id: _id}
+      if invoice then return invoice.invoiceNo
     settings = Settings.findOne {userId: Meteor.userId()}
     if settings
       invoiceNo = parseInt (settings.invoiceNo || 0)
@@ -97,6 +101,7 @@ Template.invoice.events
       from: momentFrom.toDate()
       to: momentTo.toDate()
       date: dateValue.toDate()
+    params = merge params, invoiceData(timetracks(params), customer(params))
     if _id
       Invoices.update {_id: _id}, {$set: params}
     else
@@ -109,3 +114,40 @@ Template.invoice.events
   'click .invoices': (event, template) ->
     event.preventDefault()
     FlowRouter.go '/invoice'
+
+timetracks = (params) ->
+  query = {}
+  if params.projects
+    query.projectId = {$in: params.projects}
+  if params.from
+    query.from = {$gte: params.from}
+  if params.to
+    query.to = {$lte: params.to}
+  tracks = Timetrack.find query, {sort: {from: 1}}
+  tracks.fetch()
+  
+customer = (params) -> Customers.findOne {_id: params.customer}
+
+invoiceData = (timetracks, customer) ->
+  hours_billable = 0
+  hours_non_billable = 0
+  net_sum = 0
+  for t in timetracks
+    project = Projects.findOne {_id: t.projectId}
+    if t.billable
+      hours_billable += t.time
+      net_sum += t.time * (project.rate || 0)
+    else
+      hours_non_billable += t.time
+  vat = 0
+  total = net_sum
+  if customer
+    vat = net_sum / 100 * (customer.vat || 0)
+    total += vat
+  net_sum: net_sum.toFixed(2)
+  vat: vat.toFixed(2)
+  total: total.toFixed(2)
+  payable: customer?.payable || ''
+  hours_billable: hours_billable.toFixed(2)
+  hours_non_billable: hours_non_billable.toFixed(2)
+    
