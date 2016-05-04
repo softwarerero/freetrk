@@ -1,5 +1,11 @@
 Meteor.methods
 
+  getTimetracks: (query) ->
+    LOGJ 'getTimetracks', query
+    tt = Timetrack.find query, {sort: {from: -1}, limit: Config.fetchLimit}
+    tt.fetch()
+
+
   printTimesheet: (params) ->
     LOGJ 'params', params
     query = queryFromParams params

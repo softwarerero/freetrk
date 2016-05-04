@@ -3,6 +3,15 @@ Template.timetracks.onRendered ->
   $('#from').datetimepicker dateTimePickerOptions
   $('#to').datetimepicker dateTimePickerOptions
   momentFrom = moment(from.value, Config.dateTimeFormat)
+  Session.set 'timetracks', null
+  Session.set 'timetracksSum', null
+  Meteor.call 'getTimetracks', getTimetrackQuery(), (error, timetracks) ->
+    if error then return LOGJ 'error', error
+    Session.set 'timetracks', timetracks
+    sum = _.reduce timetracks, ((memo, tt) -> memo + tt.time), 0
+    sum = Math.round(sum * 100) / 100
+    if sum then Session.set 'timetracksSum', "(#{sum})"
+
 
 getTimetrackQuery = ->
   projects = FlowRouter.getQueryParam 'projects'
@@ -18,13 +27,8 @@ getTimetrackQuery = ->
   query
   
 Template.timetracks.helpers
-  timetracks: () ->
-    Timetrack.find getTimetrackQuery(), {sort: {from: -1}, limit: Config.fetchLimit}
-  sum: () ->
-    timetracks = Timetrack.find getTimetrackQuery(), {sort: {from: -1}, limit: Config.fetchLimit}
-    sum = _.reduce timetracks.fetch(), ((memo, tt) -> memo + tt.time), 0
-    sum = Math.round(sum * 100) / 100
-    if sum then "(#{sum})"
+  timetracks: () -> Session.get 'timetracks' 
+  sum: () -> Session.get 'timetracksSum'
   projectName: (_id) ->
     project = Projects.findOne {_id: _id}
     project?.name
